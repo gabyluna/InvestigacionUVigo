@@ -5,105 +5,57 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
-                template="template.xhtml"
-                xmlns:c="http://java.sun.com/jsp/jstl/core">
+                template="template.xhtml">
 
- 
-    
-    <ui:define name="title2"> 
-        DashBoard
+
+
+    <ui:define name="titlePanel"> 
+        Form Upload
     </ui:define>
-
+    <ui:define name="title2"> 
+        Select type ontology:
+    </ui:define>
     <ui:define name="contenido">  
-        
-            
         <h:form   enctype="multipart/form-data">
-             <!-- Menu -->
-             
-             
+
             <p:growl id="messages" showDetail="true" />
+            <h:panelGrid columns="3" style="margin-bottom:10px" cellpadding="5">
+                <p:outputPanel id="customPanel" style="margin-bottom:10px">
+                    <p:selectOneRadio id="selectOption" value="#{fileUploadBean.chooseMode}" layout="custom" >
+                        <f:selectItem itemLabel="Base Ontology" itemValue="B" />
+                        <p:spacer width="20px" />
+                        <f:selectItem itemLabel="Automatic Ontology" itemValue="A" />
+                    </p:selectOneRadio>
+                    <h:panelGrid columns="5" cellpadding="5">
+                        <p:radioButton id="opt1" for="selectOption" itemIndex="0" />
+                        <h:outputLabel for="opt1" value="Base Ontology" style="font-size: 12px;"/>
+                        <p:spacer width="20" />
+                        <p:radioButton id="opt2" for="selectOption" itemIndex="1" />
+                        <h:outputLabel for="opt2" value="Automatic Ontology" style="font-size: 12px" />
 
+                    </h:panelGrid>
+                </p:outputPanel>
+                <p:spacer width="20" />
+                <p:fileUpload value="#{fileUploadBean.file}" mode="simple" skinSimple="true"  />
+            </h:panelGrid>
 
-            <!-- top tiles -->
+            <p:spacer height="20" />
 
-            <p:carousel numVisible="1" effect="easeInStrong" headerText="Basic Metrics" style="margin-bottom:0" value="#{dashBoardBean.listaInfo}" var="shipmentRow" responsive="true">
+            <h:panelGrid columns="2" style="margin:0 auto;" >
+                <p:commandButton styleClass="btn btn-round btn-primary" value="Submit" ajax="false" actionListener="#{fileUploadBean.upload}"  />
+                <p:commandButton styleClass="btn btn-round btn-primary" value="Validation" ajax="false" actionListener="#{fileUploadBean.validation}"  />
+            </h:panelGrid>
 
-                <p:tab title="#{shipmentRow.nombreOntologia}" >
-                    <div class="row tile_count" align="center" style="margin-left: 10px">
-                        <div>#{shipmentRow.nombreOntologia}</div>
-                       
-                        <p:separator />
-                        <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-
-                            <div class="count">#{shipmentRow.numClases}</div>
-                            <span class="count_bottom"># Classes</span>
-
-                        </div>
-
-                        <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-                            <div class="count">#{shipmentRow.numSubclasesDe}</div>
-                            <span class="count_bottom"># SubClasses Of (Relations)</span>
-
-
-                        </div>
-
-                        <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-                            <div  class="count green">#{shipmentRow.numPropiedates}</div>
-                            <span class="count_bottom"># Properties</span>
-
-
-                        </div>
-
-                        <div class="col-md-3 col-sm-4 col-xs-6 tile_stats_count">
-                            <div  class="count purple">#{shipmentRow.numInstancias}</div>
-                            <span class="count_bottom"># Instances</span>
-                        </div>
-
-                        <div class="col-md-3 col-sm-4 col-xs-6 tile_stats_count">
-                            <div  class="count red">#{shipmentRow.numAnotaciones}</div>
-                            <span class="count_bottom"># Annotations</span>
-                        </div>
-                    </div>
-
-
-                </p:tab>
-            </p:carousel>
-
-            <!-- /top tiles -->
             <p:separator />
-            
-            <div class="row" align="center" >
-                
-                <div class="col-md-6 col-sm-6 col-xs-12">
-                <div class="x_panel">
-                  <div class="x_title">
-                    <h2>Graphic Result Ontologies <small></small></h2>
-                    <ul class="nav navbar-right panel_toolbox">
-                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                      </li>
-                      <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-                        <ul class="dropdown-menu" role="menu">
-                          <li><a href="#">Settings 1</a>
-                          </li>
-                          <li><a href="#">Settings 2</a>
-                          </li>
-                        </ul>
-                      </li>
-                      <li><a class="close-link"><i class="fa fa-close"></i></a>
-                      </li>
-                    </ul>
-                    <div class="clearfix"></div>
-                  </div>
-                  <div class="x_content">
-                    <canvas id="canvasRadar"></canvas>
-                  </div>
-                </div>
-              </div>
-             
-            </div>
-            
+
+            <p:panelGrid columns="1" style="margin:0 auto">
+                <f:facet name="header">
+                    <h:outputText value="Result Validation" />
+                </f:facet>
+
+                <h:outputText value="#{fileUploadBean.answer}" />
+
+            </p:panelGrid>
         </h:form>
     </ui:define>
 </ui:composition>
- 

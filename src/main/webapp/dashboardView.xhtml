@@ -1,0 +1,109 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="template.xhtml"   >
+
+
+
+    <ui:define name="title2"> 
+        DashBoard
+    </ui:define>
+
+    <ui:define name="contenido">  
+
+
+        <h:form id="form"  enctype="multipart/form-data">
+            <!-- Menu -->
+
+
+            <p:growl id="messages" showDetail="true" />
+
+
+            <!-- top tiles -->
+
+            <p:carousel numVisible="1" effect="easeInStrong" headerText="Basic Metrics" style="margin-bottom:0" value="#{dashBoardBean.listDataOntolgy}" var="shipmentRow" responsive="true">
+
+                <p:tab title="#{shipmentRow.nameOntology}" >
+                    <div class="row tile_count" align="center" style="margin-left: 10px">
+                        <div>#{shipmentRow.nameOntology}</div>
+
+                        <p:separator />
+                        <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+
+                            <div class="count">#{shipmentRow.numClasses}</div>
+                            <span class="count_bottom"># Classes</span>
+
+                        </div>
+
+                        <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+                            <div class="count">#{shipmentRow.numSubclassOf}</div>
+                            <span class="count_bottom"># SubClasses Of (Relations)</span>
+
+
+                        </div>
+
+                        <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+                            <div  class="count green">#{shipmentRow.numProperties}</div>
+                            <span class="count_bottom"># Properties</span>
+
+
+                        </div>
+
+                        <div class="col-md-3 col-sm-4 col-xs-6 tile_stats_count">
+                            <div  class="count purple">#{shipmentRow.numInstances}</div>
+                            <span class="count_bottom"># Instances</span>
+                        </div>
+
+                        <div class="col-md-3 col-sm-4 col-xs-6 tile_stats_count">
+                            <div  class="count red">#{shipmentRow.numAnnotations}</div>
+                            <span class="count_bottom"># Annotations</span>
+                        </div>
+                    </div>
+
+
+                </p:tab>
+            </p:carousel>
+
+            <!-- /top tiles -->
+            <p:separator />
+            <h:panelGrid columns="1" style="margin: 0 auto; width: 2000px">
+                <div class="row" align="center" >
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2>Graphic Result Ontologies <small></small></h2>
+                                <ul class="nav navbar-right panel_toolbox">
+                                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                    </li>
+                                    <li class="dropdown">
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                                        <ul class="dropdown-menu" role="menu">
+                                            <li><a href="#">Settings 1</a>
+                                            </li>
+                                            <li><a href="#">Settings 2</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li><a class="close-link"><i class="fa fa-close"></i></a>
+                                    </li>
+                                </ul>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <canvas id="canvasRadar"></canvas>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </h:panelGrid>
+
+
+        </h:form>
+    </ui:define>
+</ui:composition>

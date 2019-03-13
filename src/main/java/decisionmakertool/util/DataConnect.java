@@ -18,8 +18,8 @@ public class DataConnect {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection con = DriverManager.getConnection(
-            "jdbc:mysql://localhost/dbdecisionmaker?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "root", "root");
-            
+                    "jdbc:mysql://localhost/dbdecisionmaker?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "root", "root");
+
             return con;
         } catch (Exception ex) {
             System.out.println("Database.getConnection() Error -->"

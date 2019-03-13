@@ -1,9 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:h="http://java.sun.com/jsf/html"
-
+<html xmlns:h="http://java.sun.com/jsf/html"
       xmlns:p="http://primefaces.org/ui">
 
     <h:head>
@@ -45,17 +41,17 @@
 
 
                             <h1>Login</h1>
-                            <p:outputLabel id="msg" value="#{login.msg}" rendered="#{login.render}" style="color: #B40404; font-size: 12px"/>  
+                            <p:outputLabel id="msg" value="#{loginBean.msg}" rendered="#{loginBean.render}" style="color: #B40404; font-size: 12px"/>  
                             <div>
-                                <p:inputText placeholder="Username" id="username" value="#{login.user}" rendered="true" required="true" />
+                                <p:inputText placeholder="Username" id="username" value="#{loginBean.user}" rendered="true" required="true" />
                                 <p:message for="username" display="text" />
                             </div>
                             <div>
-                                <p:inputText placeholder="Password"  id="password" value="#{login.pwd}" type="password" required="true"/>
+                                <p:inputText placeholder="Password"  id="password" value="#{loginBean.pwd}" type="password" required="true"/>
                                 <p:message for="password" display="text" />
                             </div>
                             <div>
-                                <p:commandButton styleClass="btn btn-round btn-primary" value="Sig in"  action="#{login.validateUsernamePassword}" update="msg" />
+                                <p:commandButton styleClass="btn btn-round btn-primary" value="Sig in"  action="#{loginBean.validateUsernamePassword}" update="msg" />
 
 
                             </div>
@@ -71,9 +67,9 @@
                                     <p>©2015 All Rights Reserved. Gentelella Alela! is a Bootstrap 3 template. Privacy and Terms</p>
                                 </div>
                             </div>
-                        
-                             
-                         
+
+
+
                         </h:form>
                         <!-- form -->
                     </section>

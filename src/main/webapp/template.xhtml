@@ -30,7 +30,7 @@
                   href="#{request.contextPath}/resources/css/nprogress.css" />
             <link rel="stylesheet" type="text/css"
                   href="#{request.contextPath}/resources/icheck/flat/green.css" />
-            
+
 
         </h:head>
         <h:body styleClass="nav-md">
@@ -57,7 +57,7 @@
                                 </div>
                                 <div class="profile_info">
                                     <span>Welcome,</span>
-                                    <h2>#{login.user}</h2>
+                                    <h2>#{loginBean.user}</h2>
                                 </div>
                             </div>
                             <!-- /menu prile quick info -->
@@ -74,16 +74,18 @@
                                         <li><a><i class="fa fa-home"></i> Home <span
                                                     class="fa fa-chevron-down"></span></a>
                                             <ul class="nav child_menu" style="display: none">
-                                                <li><a href="index.xhtml">Dashboard</a></li>
+                                                <li><a href="index.xhtml">Upload Files</a></li>
+                                                <li><a href="dashboardView.xhtml">Dashboard Metrics</a></li>
                                             </ul></li>
-                                        <li><a><i class="fa fa-upload"></i> Upload<span
+
+                                        <li><a><i class="fa fa-upload"></i> Report Errors<span
                                                     class="fa fa-chevron-down"></span></a>
                                             <ul class="nav child_menu" style="display: none">
-                                                <li><a href="uploadXml.xhtml">Upload Ontology</a></li>
+                                                <li><a href="pitfalls.xhtml">Smell Errors</a></li>
                                             </ul></li>
-                                      
-                                        
-                                        
+
+
+
                                     </ul>
                                 </div>
                             </div>
@@ -98,8 +100,8 @@
                                 </a> <a data-toggle="tooltip" data-placement="top" title="Lock"> <span
                                         class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
                                 </a> <a data-toggle="tooltip" data-placement="top" title="Logout">
-                                      <span class="glyphicon glyphicon-off" aria-hidden="true" ></span>
-                                    
+                                    <span class="glyphicon glyphicon-off" aria-hidden="true" ></span>
+
                                 </a>
                             </div>
                             <!-- /menu footer buttons -->
@@ -119,7 +121,7 @@
                                         <li class=""><a href="javascript:;"
                                                         class="user-profile dropdown-toggle" data-toggle="dropdown"
                                                         aria-expanded="false"> 
-                                                <h:graphicImage library="images" name="img.jpg"/>#{login.user}
+                                                <h:graphicImage library="images" name="img.jpg"/>#{loginBean.user}
                                                 <span class="fa fa-angle-down"></span>
                                             </a>
                                             <ul
@@ -129,10 +131,10 @@
                                                             class="badge bg-red pull-right">50%</span> <span>Settings</span>
                                                     </a></li>
                                                 <li><a href="javascript:;">Help</a></li>
-                                                <li><h:commandLink action="#{login.logout}" value="Logout"></h:commandLink></li>
+                                                <li><h:commandLink action="#{loginBean.logout}" value="Logout"></h:commandLink></li>
                                             </ul></li>
 
-                                       
+
 
                                     </ul>
                                 </nav>
@@ -146,7 +148,7 @@
                         <div class="">
                             <div class="page-title">
                                 <div class="title_left">
-           
+
                                     <h3><ui:insert name="titlePanel"/></h3>
                                 </div>
                             </div>
@@ -160,9 +162,9 @@
 
 
 
-                                    <div class="x_panel" style="height: 750px;">
+                                    <div class="x_panel" style="height: 950px;">
                                         <div class="x_title">
-                                            
+
                                             <h2><ui:insert name="title2"/></h2>
 
                                             <div class="clearfix"></div>
@@ -205,52 +207,52 @@
             <script type="text/javascript" src="#{request.contextPath}/resources/js/bootstrap.min.js"></script> <!-- Correio -->
             <script type="text/javascript" src="#{request.contextPath}/resources/js/custom.js"></script> <!-- Menu -->
             <script type="text/javascript" src="#{request.contextPath}/resources/js/chartjs/Chart.min_1.js"></script> <!-- Menu -->
-      
-            
+
+
             <h:outputScript>
-             
+
                 function chartExtender() {        
                 // this = chart widget instance        
                 // this.cfg = options      
                 this.cfg.seriesDefaults.rendererOptions.varyBarColor = true;
                 }
-                
-                 
-             // Radar chart
-            var ctx = document.getElementById("canvasRadar");
-            var data = {
-              labels: ["RROnto", "INRonto", "ANNOnto", "CROnto", "NOMOnto", "FCOnto", "CBBOnto", "LCOMonto"],
-              datasets: [{
-                label: "Automatic Ontology",
+
+
+                // Radar chart
+                var ctx = document.getElementById("canvasRadar");
+                var data = {
+                labels: ["RROnto", "INRonto", "ANNOnto", "CROnto", "NOMOnto", "RFCOnto", "CBBOnto", "LCOMonto","RCOnto"],
+                datasets: [{
+                label: "#{dashBoardBean.areaPolygon2}",
                 backgroundColor: "rgba(3, 88, 106, 0.2)",
                 borderColor: "rgba(3, 88, 106, 0.80)",
                 pointBorderColor: "rgba(3, 88, 106, 0.80)",
                 pointBackgroundColor: "rgba(3, 88, 106, 0.80)",
                 pointHoverBackgroundColor: "#fff",
                 pointHoverBorderColor: "rgba(220,220,220,1)",
-                data: #{dashBoardBean.json}
-     
-                
-              }, {
-                label: "Manual Ontology",
+                data: #{dashBoardBean.json1}
+
+
+                },{
+                label: "#{dashBoardBean.areaPolygon1}",
                 backgroundColor: "rgba(38, 185, 154, 0.2)",
                 borderColor: "rgba(38, 185, 154, 0.85)",
                 pointColor: "rgba(38, 185, 154, 0.85)",
                 pointStrokeColor: "#fff",
                 pointHighlightFill: "#fff",
                 pointHighlightStroke: "rgba(151,187,205,1)",
-                data: #{dashBoardBean.json1}
-              }]
-            };
+                data: #{dashBoardBean.json}
+                }]
+                };
 
-            var canvasRadar = new Chart(ctx, {
-              type: 'radar',
-              data: data,
-            });
+                var canvasRadar = new Chart(ctx, {
+                type: 'radar',
+                data: data,
+                });
 
-      
+
             </h:outputScript>
         </h:body>
     </f:view>
-    
+
 </html>

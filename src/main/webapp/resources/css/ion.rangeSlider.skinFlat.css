@@ -24,28 +24,28 @@
 .irs-line {
     height: 12px; top: 25px;
 }
-    .irs-line-left {
-        height: 12px;
-        background-position: 0 -30px;
-    }
-    .irs-line-mid {
-        height: 12px;
-        background-position: 0 0;
-    }
-    .irs-line-right {
-        height: 12px;
-        background-position: 100% -30px;
-    }
+.irs-line-left {
+    height: 12px;
+    background-position: 0 -30px;
+}
+.irs-line-mid {
+    height: 12px;
+    background-position: 0 0;
+}
+.irs-line-right {
+    height: 12px;
+    background-position: 100% -30px;
+}
 
 .irs-bar {
     height: 12px; top: 25px;
     background-position: 0 -60px;
 }
-    .irs-bar-edge {
-        top: 25px;
-        height: 12px; width: 9px;
-        background-position: 0 -90px;
-    }
+.irs-bar-edge {
+    top: 25px;
+    height: 12px; width: 9px;
+    background-position: 0 -90px;
+}
 
 .irs-shadow {
     height: 3px; top: 34px;
