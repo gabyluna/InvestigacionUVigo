@@ -1,0 +1,45 @@
+
+N
+squid:S106<"9Replace this use of System.out or System.err by a logger.(¬™2
+xsquid:S1450"\Remove the "numSubClasses" field and declare it as a local variable in the relevant methods.(³òö™üÿÿÿÿ
+xsquid:S1450"\Remove the "numAnnotation" field and declare it as a local variable in the relevant methods.(å¯ıøÿÿÿÿ
+„squid:S1450"hRemove the "numClassesWithIndividuals" field and declare it as a local variable in the relevant methods.(Ñ¼²ªüÿÿÿÿ
+Jsquid:S14818"'Remove this unused "hs" local variable.(İÙ°ùÿÿÿÿ8í¼—-
+—squid:S1186!"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(ƒ‰_
+psquid:S2293M"YReplace the type specification in this constructor call with the diamond operator ("<>").(¨şƒú
+rsquid:S1450"[Remove the "numInstances" field and declare it as a local variable in the relevant methods.(›àœì
+usquid:S1450"YRemove the "numClasses" field and declare it as a local variable in the relevant methods.(ÑßõŠúÿÿÿÿ
+O
+squid:S106G"9Replace this use of System.out or System.err by a logger.(± Ö’
+Ysquid:S1854%"6Remove this useless assignment to local variable "hs".(İÙ°ùÿÿÿÿ8ğî¼—-
+usquid:S1450"^Remove the "numSuperClasses" field and declare it as a local variable in the relevant methods.(ÛûÍ£
+Ysquid:S1854B"6Remove this useless assignment to local variable "hs".(İÙ°ùÿÿÿÿ8¹¦ã¼—-
+Jsquid:S1481%"'Remove this unused "hs" local variable.(İÙ°ùÿÿÿÿ8ğî¼—-
+Xsquid:S1854A"ARemove this useless assignment to local variable "listInstances".(ØÂº¡
+usquid:S2293/"YReplace the type specification in this constructor call with the diamond operator ("<>").(¨¯¬ôûÿÿÿÿ
+T
+squid:S106a"9Replace this use of System.out or System.err by a logger.(ÑÀ¬’ıÿÿÿÿ
+O
+squid:S106i"9Replace this use of System.out or System.err by a logger.(çŠ §
+Jsquid:S1481B"'Remove this unused "hs" local variable.(İÙ°ùÿÿÿÿ8¹¦ã¼—-
+xsquid:S1450"\Remove the "numProperties" field and declare it as a local variable in the relevant methods.(‹ş­Äùÿÿÿÿ
+qsquid:UselessImportCheck"HRemove this unused import 'org.semanticweb.owlapi.model.OWLDataFactory'.(ÓŞİªşÿÿÿÿ
+Ysquid:S18548"6Remove this useless assignment to local variable "hs".(İÙ°ùÿÿÿÿ8í¼—-
+csquid:S1854f"LRemove this useless assignment to local variable "listClassWithIndividuals".(ıŠàØ
+~squid:S1450"bRemove the "numRelationsOfThing" field and declare it as a local variable in the relevant methods.(€´ä•úÿÿÿÿ
+O
+squid:S1062"9Replace this use of System.out or System.err by a logger.(õº‰
+psquid:S2293A"YReplace the type specification in this constructor call with the diamond operator ("<>").(ØÂº¡
+N
+squid:S106X"9Replace this use of System.out or System.err by a logger.(É«Œ1
+T
+squid:S106*"9Replace this use of System.out or System.err by a logger.(ò¯–úÿÿÿÿ
+[squid:S1854/"?Remove this useless assignment to local variable "listClasses".(¨¯¬ôûÿÿÿÿ
+]squid:S18547"ARemove this useless assignment to local variable "lisSubclasses".(†ÆÉúÿÿÿÿ
+psquid:S2293f"YReplace the type specification in this constructor call with the diamond operator ("<>").(ıŠàØ
+qsquid:UselessImportCheck"HRemove this unused import 'org.semanticweb.owlapi.reasoner.OWLReasoner'.(¼â†ÿÿÿÿÿ
+usquid:S22937"YReplace the type specification in this constructor call with the diamond operator ("<>").(†ÆÉúÿÿÿÿ
+Ysquid:S1854M"BRemove this useless assignment to local variable "listProperties".(¨şƒú
+O
+squid:S106P"9Replace this use of System.out or System.err by a logger.(ûÉ¤ÿ
+asquid:S1854n">Remove this useless assignment to local variable "listResult".(ÏİïÜøÿÿÿÿ8¨—è¼—-
