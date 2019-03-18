@@ -6,10 +6,9 @@
 package decisionmakertool.beans;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import decisionmakertool.metrics.*;
 import decisionmakertool.owl.LoadOntologyClass;
-import decisionmakertool.metrics.BaseMetrics;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import decisionmakertool.metrics.QualityMetrics;
 import decisionmakertool.service.QualityMetricsInterface;
 import decisionmakertool.model.MetricOntologyModel;
 import decisionmakertool.util.PathOntology;
@@ -31,7 +30,6 @@ public class DashBoardBean {
     private Integer[] dataAutomaticOntology = {0, 0, 0, 0, 0, 0, 0, 0, 0};
     private String resultMetricsManualOntology = "";
     private String resultMetricsAutomaticOntology = "";
-    private BaseMetrics baseMetricsOntology = new BaseMetrics();
     private String areaPolygonManualOntology = "";
     private String areaPolygonAutomaticOntology= "";
 
@@ -41,7 +39,6 @@ public class DashBoardBean {
             this.listDataOntology = new ArrayList<>();
         }
 
-        baseMetricsOntology = new BaseMetrics();
         loadOntologies();
         loadGraphicMetrics();
     }
@@ -75,14 +72,23 @@ public class DashBoardBean {
     private void loadBaseMetricsOntology(OWLOntology ontology, String name) {
         MetricOntologyModel metricsOntology = new MetricOntologyModel();
         metricsOntology.setNameOntology(name);
-        metricsOntology.setNumAnnotations(baseMetricsOntology.getNumAnnotation(ontology));
-        metricsOntology.setNumProperties(baseMetricsOntology.getNumProperties(ontology));
-        metricsOntology.setNumClasses(baseMetricsOntology.getNumClasses(ontology));
-        metricsOntology.setNumInstances(baseMetricsOntology.getNumInstances(ontology));
-        metricsOntology.setNumSubclassOf(baseMetricsOntology.getNumSubClasses(ontology));
-        metricsOntology.setNumSuperclasses(baseMetricsOntology.getNumSuperClasses(ontology));
-        metricsOntology.setRelationsThing(baseMetricsOntology.getNumRelationsOfThing(ontology));
-        metricsOntology.setNumClassWithIndividuals(baseMetricsOntology.getNumClassesWithIndividuals(ontology));
+        BaseMetricsContext baseMetricsContext = new BaseMetricsContext();
+        baseMetricsContext.setBaseMetricsStrategy(new NumAnnotation());
+        metricsOntology.setNumAnnotations(baseMetricsContext.getBaseMetricStrategy(ontology));
+        baseMetricsContext.setBaseMetricsStrategy(new NumProperties());
+        metricsOntology.setNumProperties(baseMetricsContext.getBaseMetricStrategy(ontology));
+        baseMetricsContext.setBaseMetricsStrategy(new NumClasses());
+        metricsOntology.setNumClasses(baseMetricsContext.getBaseMetricStrategy(ontology));
+        baseMetricsContext.setBaseMetricsStrategy(new NumInstances());
+        metricsOntology.setNumInstances(baseMetricsContext.getBaseMetricStrategy(ontology));
+        baseMetricsContext.setBaseMetricsStrategy(new NumSubClasses());
+        metricsOntology.setNumSubclassOf(baseMetricsContext.getBaseMetricStrategy(ontology));
+        baseMetricsContext.setBaseMetricsStrategy(new NumSuperClasses());
+        metricsOntology.setNumSuperclasses(baseMetricsContext.getBaseMetricStrategy(ontology));
+        baseMetricsContext.setBaseMetricsStrategy(new NumRelationsOfThing());
+        metricsOntology.setRelationsThing(baseMetricsContext.getBaseMetricStrategy(ontology));
+        baseMetricsContext.setBaseMetricsStrategy(new NumClassesWithIndividuals());
+        metricsOntology.setNumClassWithIndividuals(baseMetricsContext.getBaseMetricStrategy(ontology));
         listDataOntology.add(metricsOntology);
 
     }
