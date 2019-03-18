@@ -57,7 +57,7 @@ public class BaseMetricsTest {
 
     @Test
     public void getNumRelationsOfThing() {
-        baseMetricsStrategy = baseMetricsFactory.getBaseMetric(BaseMetric.RELATIONSTHING);
+        baseMetricsStrategy = baseMetricsFactory.getBaseMetric(BaseMetric.RELATIONS_THING);
         Assert.assertEquals(922,baseMetricsStrategy.calculateMetric(ontologyActual));
     }
 

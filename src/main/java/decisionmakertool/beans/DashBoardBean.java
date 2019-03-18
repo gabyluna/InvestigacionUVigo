@@ -88,7 +88,7 @@ public class DashBoardBean {
         metricsOntology.setNumSubclassOf(baseMetricsStrategy.calculateMetric(ontology));
         baseMetricsStrategy = baseMetricsFactory.getBaseMetric(BaseMetric.SUPERCLASSES);
         metricsOntology.setNumSuperclasses(baseMetricsStrategy.calculateMetric(ontology));
-        baseMetricsStrategy = baseMetricsFactory.getBaseMetric(BaseMetric.RELATIONSTHING);
+        baseMetricsStrategy = baseMetricsFactory.getBaseMetric(BaseMetric.RELATIONS_THING);
         metricsOntology.setRelationsThing(baseMetricsStrategy.calculateMetric(ontology));
         baseMetricsStrategy = baseMetricsFactory.getBaseMetric(BaseMetric.CLASS_WITH_INDIVIDUALS);
         metricsOntology.setNumClassWithIndividuals(baseMetricsStrategy.calculateMetric(ontology));

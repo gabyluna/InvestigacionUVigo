@@ -21,7 +21,7 @@ public class BaseMetricsFactory {
             case PROPERTIES:
                 baseMetricsStrategy = new NumProperties();
                 break;
-            case RELATIONSTHING:
+            case RELATIONS_THING:
                 baseMetricsStrategy = new NumRelationsOfThing();
                 break;
             case CLASS_WITH_INDIVIDUALS:
