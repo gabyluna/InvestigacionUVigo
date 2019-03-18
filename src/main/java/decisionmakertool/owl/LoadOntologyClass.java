@@ -34,6 +34,7 @@ public class LoadOntologyClass {
     public LoadOntologyClass() {
 
     }
+
     public LoadOntologyClass(String path) {
         try {
             File file = new File(path);
@@ -50,6 +51,7 @@ public class LoadOntologyClass {
     public String validationConsistency(String path) {
         String answer = "";
         File file = new File(path);
+
         try {
             manager = OWLManager.createOWLOntologyManager();
             ontology = manager.loadOntologyFromOntologyDocument(file);
@@ -84,8 +86,8 @@ public class LoadOntologyClass {
         // Ask for an explanation of `Thing subclass of Nothing` - this axiom is entailed in any inconsistent ontology
         Set<Explanation<OWLAxiom>> explanations = explainInconsistency.getExplanations(dataFactory.getOWLSubClassOfAxiom(dataFactory
                 .getOWLThing(), dataFactory.getOWLNothing()));
-
         int cont = 1;
+
         for (Explanation<OWLAxiom> e : explanations) {
             answer += "Explain " + cont + "\n";
             answer += "Axioms causing the inconsistency:\n";

@@ -117,6 +117,7 @@ public class QualityMetrics implements QualityMetricsInterface {
    public int cboontoMetric(int superclass, int numClasses, int numRelationsThing) {
         int totalCboonto ;
         float cboonto = (float) superclass / (numClasses - numRelationsThing);
+
         if (cboonto > 6 && cboonto <= 8) {
             totalCboonto = SECOND_RANGE;
         } else if (cboonto > 4 && cboonto <= 6) {

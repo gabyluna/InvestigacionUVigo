@@ -7,11 +7,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class NumProperties implements BaseMetricsStrategy {
+
     public int calculateMetric(OWLOntology ontology){
         List<String> listProperties = new ArrayList<>();
+
         for (OWLObjectProperty p : ontology.getObjectPropertiesInSignature()) {
             listProperties.add(BaseMetricsStrategy.pm.getShortForm(p).replaceAll(":", ""));
         }
         return listProperties.size();
     }
+
 }

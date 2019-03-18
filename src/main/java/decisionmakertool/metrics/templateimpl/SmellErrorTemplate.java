@@ -16,13 +16,16 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public abstract class SmellErrorTemplate {
+
     private static IWebService webService = new WebService();
 
     private  static void getResultPitfalls(String path, List<Pitfall> listResult, PitfallSelector pitfallSelector) throws UnexpectedErrorException, IOException {
         webService.setOntologyFile(path);
         webService.setPitfallSelector(pitfallSelector);
+
         IPitfallManager manager = new PitfallManager(webService.getResponse());
         Iterator<Pitfall> iterator = manager.getPitfalls().iterator();
+
         while (iterator.hasNext()) {
             Pitfall pitfall = iterator.next();
             listResult.add(pitfall);
@@ -31,6 +34,7 @@ public abstract class SmellErrorTemplate {
 
     public static void loadPitfallSelector(String path, List<Pitfall> listResult, Integer[] arrayPitfalls) throws UnexpectedErrorException, IOException {
         PitfallSelector pitfallSelector = new PitfallSelector();
+
         for (int i = 0; i < arrayPitfalls.length; i++) {
             pitfallSelector.selectPitfall(arrayPitfalls[i]);
         }
@@ -39,6 +43,7 @@ public abstract class SmellErrorTemplate {
 
     public  List<AffectedElement> getElementsSmellErrors(String path, Pitfall pitfall) {
         List<AffectedElement> listResult = new ArrayList<>();
+
         try {
             webService.setOntologyFile(path);
             IPitfallManager manager = new PitfallManager(webService.getResponse());

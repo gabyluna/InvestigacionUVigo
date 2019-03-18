@@ -9,9 +9,11 @@ import java.util.List;
 import java.util.Set;
 
 public class NumInstances implements BaseMetricsStrategy {
+
     public int calculateMetric(OWLOntology ontology){
         List<String> listInstances = new ArrayList<>();
         Set<OWLNamedIndividual> individualsSignature = ontology.getIndividualsInSignature();
+
         for (OWLNamedIndividual ind : individualsSignature) {
             String []individuals = UtilClass.cutString(ind.toString());
 
@@ -19,9 +21,11 @@ public class NumInstances implements BaseMetricsStrategy {
                 listInstances.add(individuals[1].replaceAll(">", ""));
             }
         }
+
         Collections.sort(listInstances);
         UtilClass.removeRepeatClasses(listInstances);
 
         return listInstances.size();
     }
+
 }

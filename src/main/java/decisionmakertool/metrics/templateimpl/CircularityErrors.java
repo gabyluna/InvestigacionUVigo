@@ -9,10 +9,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class CircularityErrors extends SmellErrorTemplate{
+
     private static final Integer []arrayPitfallsCircularity = {6};
 
     public  List<Pitfall> getListSmellErrors(String path){
         List<Pitfall> listResult = new ArrayList<>();
+
         try {
             SmellErrorTemplate.loadPitfallSelector(path, listResult, arrayPitfallsCircularity);
         } catch (UnexpectedErrorException | IOException ex) {

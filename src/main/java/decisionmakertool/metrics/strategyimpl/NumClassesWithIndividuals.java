@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 public class NumClassesWithIndividuals implements BaseMetricsStrategy {
+
     public int calculateMetric(OWLOntology ontology){
         List<String> listClassWithIndividuals = new ArrayList<>();
         Set<OWLClass> classes = ontology.getClassesInSignature();
@@ -21,4 +22,5 @@ public class NumClassesWithIndividuals implements BaseMetricsStrategy {
         }
         return listClassWithIndividuals.size();
     }
+
 }

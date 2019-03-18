@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 public class NumSubClasses implements BaseMetricsStrategy {
+
     public int calculateMetric(OWLOntology ontology){
         List<String> lisSubclasses = new ArrayList<>();
         Set<OWLSubClassOfAxiom> subClasses = ontology.getAxioms(AxiomType.SUBCLASS_OF);
@@ -16,7 +17,9 @@ public class NumSubClasses implements BaseMetricsStrategy {
         for (OWLSubClassOfAxiom clase : subClasses) {
             lisSubclasses.add(clase.getSignature().toString());
         }
+
         UtilClass.removeRepeatClasses(lisSubclasses);
         return lisSubclasses.size();
     }
+
 }

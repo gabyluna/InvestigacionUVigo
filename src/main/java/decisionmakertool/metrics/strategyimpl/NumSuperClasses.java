@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 public class NumSuperClasses implements BaseMetricsStrategy {
+
     public int calculateMetric(OWLOntology ontology){
         List<String> listSupClass = new ArrayList<>();
         Set<OWLClass> classes = ontology.getClassesInSignature();
@@ -18,7 +19,7 @@ public class NumSuperClasses implements BaseMetricsStrategy {
                 listSupClass.add(sc.getSignature().toString());
             }
         }
-
         return listSupClass.size();
     }
+
 }
