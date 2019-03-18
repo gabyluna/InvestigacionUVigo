@@ -1,4 +1,4 @@
-package decisionmakertool.metrics.templateImpl;
+package decisionmakertool.metrics.templateimpl;
 
 import ionelvirgilpop.drontoapi.except.UnexpectedErrorException;
 import ionelvirgilpop.drontoapi.pitfallmanager.AffectedElement;

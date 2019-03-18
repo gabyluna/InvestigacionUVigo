@@ -5,7 +5,7 @@
  */
 package decisionmakertool.beans;
 
-import decisionmakertool.metrics.templateImpl.*;
+import decisionmakertool.metrics.templateimpl.*;
 import decisionmakertool.util.PathOntology;
 import ionelvirgilpop.drontoapi.pitfallmanager.AffectedElement;
 import ionelvirgilpop.drontoapi.pitfallmanager.Pitfall;

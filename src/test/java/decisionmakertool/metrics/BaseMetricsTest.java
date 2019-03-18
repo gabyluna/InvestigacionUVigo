@@ -1,6 +1,6 @@
 package decisionmakertool.metrics;
 
-import decisionmakertool.metrics.strategyImpl.*;
+import decisionmakertool.metrics.strategyimpl.*;
 import decisionmakertool.owl.LoadOntologyClass;
 import org.junit.Assert;
 import org.junit.Before;

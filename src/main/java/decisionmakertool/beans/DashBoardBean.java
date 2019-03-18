@@ -7,7 +7,7 @@ package decisionmakertool.beans;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import decisionmakertool.metrics.*;
-import decisionmakertool.metrics.strategyImpl.*;
+import decisionmakertool.metrics.strategyimpl.*;
 import decisionmakertool.owl.LoadOntologyClass;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import decisionmakertool.service.QualityMetricsInterface;

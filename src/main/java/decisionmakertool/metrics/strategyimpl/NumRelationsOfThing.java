@@ -1,4 +1,4 @@
-package decisionmakertool.metrics.strategyImpl;
+package decisionmakertool.metrics.strategyimpl;
 
 import org.semanticweb.owlapi.model.AxiomType;
 import org.semanticweb.owlapi.model.OWLOntology;

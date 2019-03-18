@@ -1,4 +1,4 @@
-package decisionmakertool.metrics.strategyImpl;
+package decisionmakertool.metrics.strategyimpl;
 
 import decisionmakertool.util.UtilClass;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
