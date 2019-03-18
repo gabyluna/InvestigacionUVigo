@@ -1,4 +1,4 @@
-package decisionmakertool.metrics;
+package decisionmakertool.metrics.strategyImpl;
 
 import org.semanticweb.owlapi.model.AxiomType;
 import org.semanticweb.owlapi.model.OWLOntology;
@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 public class NumRelationsOfThing implements BaseMetricsStrategy {
-    public int getBaseMetric(OWLOntology ontology){
+    public int calculateMetric(OWLOntology ontology){
         List<String> listRelationsThing = new ArrayList<>();
         Set<OWLSubClassOfAxiom> subClasses = ontology.getAxioms(AxiomType.SUBCLASS_OF);
         for (OWLSubClassOfAxiom subClassAux : subClasses) {

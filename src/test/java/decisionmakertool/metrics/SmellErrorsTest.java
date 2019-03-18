@@ -1,5 +1,9 @@
 package decisionmakertool.metrics;
 
+import decisionmakertool.metrics.templateImpl.CircularityErrors;
+import decisionmakertool.metrics.templateImpl.IncompletenessErrors;
+import decisionmakertool.metrics.templateImpl.PartitionErrors;
+import decisionmakertool.metrics.templateImpl.SemanticErrors;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

@@ -1,4 +1,4 @@
-package decisionmakertool.metrics;
+package decisionmakertool.metrics.strategyImpl;
 
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLIndividual;
@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class NumClassesWithIndividuals implements  BaseMetricsStrategy{
-    public int getBaseMetric(OWLOntology ontology){
+public class NumClassesWithIndividuals implements BaseMetricsStrategy {
+    public int calculateMetric(OWLOntology ontology){
         List<String> listClassWithIndividuals = new ArrayList<>();
         Set<OWLClass> classes = ontology.getClassesInSignature();
 

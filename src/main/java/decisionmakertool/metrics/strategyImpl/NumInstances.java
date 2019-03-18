@@ -1,4 +1,4 @@
-package decisionmakertool.metrics;
+package decisionmakertool.metrics.strategyImpl;
 
 import decisionmakertool.util.UtilClass;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 public class NumInstances implements BaseMetricsStrategy {
-    public int getBaseMetric(OWLOntology ontology){
+    public int calculateMetric(OWLOntology ontology){
         List<String> listInstances = new ArrayList<>();
         Set<OWLNamedIndividual> individualsSignature = ontology.getIndividualsInSignature();
         for (OWLNamedIndividual ind : individualsSignature) {

@@ -5,8 +5,7 @@
  */
 package decisionmakertool.beans;
 
-import decisionmakertool.metrics.*;
-import decisionmakertool.service.SmellErrorsInterface;
+import decisionmakertool.metrics.templateImpl.*;
 import decisionmakertool.util.PathOntology;
 import ionelvirgilpop.drontoapi.pitfallmanager.AffectedElement;
 import ionelvirgilpop.drontoapi.pitfallmanager.Pitfall;
@@ -72,7 +71,12 @@ public class PitfallsBean {
     }
 
     public void loadAffectedElements(Pitfall selectedPitfall1) {
-        SmellErrorTemplate smellErrorTemplate = null;
+        SmellErrorTemplate smellErrorTemplate = new SmellErrorTemplate() {
+            @Override
+            public List<Pitfall> getListSmellErrors(String path) {
+                return null;
+            }
+        };
         listAffectedElements = smellErrorTemplate.getElementsSmellErrors(pathAutomaticOntology.getPath(), selectedPitfall1);
     }
 
