@@ -12,15 +12,14 @@ public class BaseMetricsTest {
 
     @Before
     public void initialize() {
-        LoadOntologyClass loadOntology = new LoadOntologyClass();
-        loadOntology.loadOntology("C:/Users/Gaby/Desktop/Vbox/OntoFinales/ontoFinal.owl");
+        LoadOntologyClass loadOntology = new LoadOntologyClass("C:/Users/Gaby/Desktop/Vbox/OntoFinales/ontoFinal.owl");
         ontologyActual = loadOntology.getOntology();
         baseMetrics = new BaseMetrics();
     }
 
     @Test
     public void getNumSuperClasses(){
-        Assert.assertEquals(50,baseMetrics.getNumSuperClasses(ontologyActual));
+        Assert.assertEquals(1141,baseMetrics.getNumSuperClasses(ontologyActual));
     }
 
     @Test
@@ -57,4 +56,5 @@ public class BaseMetricsTest {
     public void getNumClassesWithIndividuals() {
         Assert.assertEquals(1,baseMetrics.getNumClassesWithIndividuals(ontologyActual));
     }
+
 }

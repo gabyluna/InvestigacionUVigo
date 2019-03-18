@@ -14,20 +14,10 @@ import java.util.List;
  * @author Gaby
  */
 public interface SmellErrorsInterface {
-    
-    
-    
-
     public List<Pitfall> circularityErrors(String path);
-
     public List<Pitfall> partitionErrors(String path);
-
     public List<Pitfall> semanticErrors(String path);
-
     public List<Pitfall> incompletenessErrors(String path);
-
     public void redundandyErrors(String path);
-
     public List<AffectedElement> getElementsSmellErrors(String path, Pitfall pitfall);
-
 }

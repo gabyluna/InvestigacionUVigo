@@ -7,31 +7,35 @@ package decisionmakertool.util;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-/**
- *
- * @author gaby_
- */
 public class DataConnect {
+    private static final String UNAME = "root";
+    private static final String UPASS = "root";
+
+    private  DataConnect(){
+
+    }
 
     public static Connection getConnection() {
+        Connection con = null;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection con = DriverManager.getConnection(
-                    "jdbc:mysql://localhost/dbdecisionmaker?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "root", "root");
+            String connectionString = "jdbc:mysql://localhost/dbdecisionmaker?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
+            con = DriverManager.getConnection(connectionString,UNAME, UPASS);
 
-            return con;
         } catch (Exception ex) {
-            System.out.println("Database.getConnection() Error -->"
-                    + ex.getMessage());
-            return null;
+            Logger.getLogger(DataConnect.class.getName()).log(Level.SEVERE, "Database.getConnection() Error -->", ex);
         }
+        return con;
     }
 
     public static void close(Connection con) {
         try {
             con.close();
         } catch (Exception ex) {
+            Logger.getLogger(DataConnect.class.getName()).log(Level.SEVERE, "Database.getConnection() Error -->", ex);
         }
     }
 }

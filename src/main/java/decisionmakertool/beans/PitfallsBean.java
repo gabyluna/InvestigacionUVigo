@@ -5,31 +5,26 @@
  */
 package decisionmakertool.beans;
 
-import decisionmakertool.metrics.SmellErrors;
+import decisionmakertool.metrics.*;
 import decisionmakertool.service.SmellErrorsInterface;
 import decisionmakertool.util.PathOntology;
 import ionelvirgilpop.drontoapi.pitfallmanager.AffectedElement;
 import ionelvirgilpop.drontoapi.pitfallmanager.Pitfall;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
-import org.apache.commons.collections.ListUtils;
 
 @ManagedBean
 @ViewScoped
 public class PitfallsBean {
-
     private List<Pitfall> listPitfalls = new ArrayList<>();
     private Pitfall selectedPitfall = new Pitfall(0);
     private List<AffectedElement> listAffectedElements = new ArrayList<>();
     private PathOntology pathAutomaticOntology = new PathOntology();
-    private SmellErrorsInterface smellErrorsInterface;
-    private List<Pitfall> listCircularityErrors ;
-    private List<Pitfall> listPartitionErrors;
-    private List<Pitfall> listSemanticErrors ;
-    private  List<Pitfall> listIncompletenessErrors;
 
     @PostConstruct
     public void init() {
@@ -43,35 +38,42 @@ public class PitfallsBean {
         loadPitfalls();
     }
 
-    public void loadPitfalls() {
+    private void loadPitfalls() {
         listPitfalls = new ArrayList<>();
-        smellErrorsInterface = new SmellErrors();
         validationListPitfalls();
     }
 
-    public void validationListPitfalls(){
-        listCircularityErrors = smellErrorsInterface.circularityErrors(pathAutomaticOntology.getPath());
-        listPartitionErrors = smellErrorsInterface.partitionErrors(pathAutomaticOntology.getPath());
-        listSemanticErrors = smellErrorsInterface.semanticErrors(pathAutomaticOntology.getPath());
-        listIncompletenessErrors = smellErrorsInterface.incompletenessErrors(pathAutomaticOntology.getPath());
+    private void validationListPitfalls(){
+        CircularityErrors circularityErrors = new CircularityErrors();
+        List<Pitfall>  listCircularityErrors = circularityErrors.getListSmellErrors(pathAutomaticOntology.getPath());
+        PartitionErrors partitionErrors = new PartitionErrors();
+        List<Pitfall> listPartitionErrors = partitionErrors.getListSmellErrors(pathAutomaticOntology.getPath());
+        SemanticErrors semanticErrors = new SemanticErrors();
+        List<Pitfall> listSemanticErrors = semanticErrors.getListSmellErrors(pathAutomaticOntology.getPath());
+        IncompletenessErrors incompletenessErrors = new IncompletenessErrors();
+        List<Pitfall> listIncompletenessErrors = incompletenessErrors.getListSmellErrors(pathAutomaticOntology.getPath());
+        addPitfallsAtList(listCircularityErrors);
+        addPitfallsAtList(listPartitionErrors);
+        addPitfallsAtList(listSemanticErrors);
+        addPitfallsAtList(listIncompletenessErrors);
+    }
 
-        if (!listCircularityErrors.isEmpty()) {
-            listPitfalls = ListUtils.union(listPitfalls, listCircularityErrors);
-        }else if (!listPartitionErrors.isEmpty()) {
-            listPitfalls = ListUtils.union(listPitfalls, listPartitionErrors);
-            // listPitfalls.addAll(listPartitionErrors) ;
-        }else if (!listSemanticErrors.isEmpty()) {
-            listPitfalls = ListUtils.union(listPitfalls, listSemanticErrors);
-            //listPitfalls.addAll(listSemanticErrors) ;
-        }else if(!listIncompletenessErrors.isEmpty()){
-            listPitfalls = ListUtils.union(listPitfalls, listIncompletenessErrors);
-            // listPitfalls.addAll(listIncompletenessErrors) ;
+    private void addPitfallsAtList(List<Pitfall>  listPitfallErrors){
+        if (!listPitfallErrors.isEmpty()) {
+            listPitfalls =union(listPitfalls, listPitfallErrors);
         }
     }
 
-    public void loadAffectedElements1(Pitfall selectedPitfall1) {
-        smellErrorsInterface = new SmellErrors();
-        listAffectedElements = smellErrorsInterface.getElementsSmellErrors(pathAutomaticOntology.getPath(), selectedPitfall1);
+    private <T> List<T> union(List<T> list1, List<T> list2) {
+        Set<T> set = new HashSet<>();
+        set.addAll(list1);
+        set.addAll(list2);
+        return new ArrayList<>(set);
+    }
+
+    public void loadAffectedElements(Pitfall selectedPitfall1) {
+        SmellErrorTemplate smellErrorTemplate = null;
+        listAffectedElements = smellErrorTemplate.getElementsSmellErrors(pathAutomaticOntology.getPath(), selectedPitfall1);
     }
 
     public List<Pitfall> getListPitfalls() {
@@ -97,5 +99,4 @@ public class PitfallsBean {
     public void setListAffectedElements(List<AffectedElement> listAffectedElements) {
         this.listAffectedElements = listAffectedElements;
     }
-
 }

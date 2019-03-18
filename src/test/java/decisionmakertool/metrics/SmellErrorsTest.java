@@ -1,44 +1,44 @@
 package decisionmakertool.metrics;
 
-import decisionmakertool.owl.LoadOntologyClass;
-import ionelvirgilpop.drontoapi.pitfallmanager.Pitfall;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.Assert.*;
-
 public class SmellErrorsTest {
-    private SmellErrors smellErrors;
+    private CircularityErrors circularityErrors;
+    private PartitionErrors partitionErrors;
+    private SemanticErrors semanticErrors;
+    private IncompletenessErrors incompletenessErrors;
     private String path;
 
     @Before
     public void initialize() {
        path = "C:/Users/Gaby/Desktop/Vbox/OntoFinales/ontoFinal.owl";
-       smellErrors = new SmellErrors();
+       circularityErrors = new CircularityErrors();
+       partitionErrors = new PartitionErrors();
+       semanticErrors = new SemanticErrors();
+       incompletenessErrors = new IncompletenessErrors();
     }
 
     @Test
     public void circularityErrors() {
-       Assert.assertNotNull(smellErrors.circularityErrors(path));
+       Assert.assertNotNull(circularityErrors.getListSmellErrors(path));
     }
 
     @Test
     public void partitionErrors() {
-        Assert.assertNotNull(smellErrors.partitionErrors(path));
+
+        Assert.assertNotNull(partitionErrors.getListSmellErrors(path));
     }
 
     @Test
     public void semanticErrors() {
-        Assert.assertNotNull(smellErrors.semanticErrors(path));
+        Assert.assertNotNull(semanticErrors.getListSmellErrors(path));
     }
 
     @Test
     public void incompletenessErrors() {
-        Assert.assertNotNull(smellErrors.incompletenessErrors(path));
+        Assert.assertNotNull(incompletenessErrors.getListSmellErrors(path));
     }
 
     @Test

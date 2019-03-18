@@ -6,10 +6,6 @@ package decisionmakertool.util;
 
 import javax.faces.context.FacesContext;
 
-/**
- *
- * @author usuario
- */
 public class PathOntology {
 
     private String realpath;
@@ -30,18 +26,9 @@ public class PathOntology {
         this.path = path;
     }
 
-    /**
-     * @return the pathBase
-     */
     public String getPathBase() {
         return pathBase;
     }
 
-    /**
-     * @param pathBase the pathBase to set
-     */
-    public void setPathBase(String pathBase) {
-        this.pathBase = pathBase;
-    }
 
 }

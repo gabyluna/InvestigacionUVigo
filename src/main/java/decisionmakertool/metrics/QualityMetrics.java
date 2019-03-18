@@ -7,16 +7,12 @@ package decisionmakertool.metrics;
 
 import decisionmakertool.service.QualityMetricsInterface;
 
-/**
- *
- * @author Gaby
- */
 public class QualityMetrics implements QualityMetricsInterface {
-    public static final int FIRST_RANGE = 1;
-    public static final int SECOND_RANGE = 2;
-    public static final int THIRD_RANGE = 3;
-    public static final int QUARTER_RANGE = 4;
-    public static final int FIFTH_RANGE = 5;
+    private static final int FIRST_RANGE = 1;
+    private static final int SECOND_RANGE = 2;
+    private static final int THIRD_RANGE = 3;
+    private static final int QUARTER_RANGE = 4;
+    private static final int FIFTH_RANGE = 5;
 
     @Override
     public int rrontoMetric(int numProperties, int subclassesOf) {
@@ -49,7 +45,7 @@ public class QualityMetrics implements QualityMetricsInterface {
     }
 
     private int calculateMetric(float range) {
-        int result = 0;
+        int result ;
         range = range * 100;
 
         if (range >= 0 && range <= 20) {
@@ -68,31 +64,41 @@ public class QualityMetrics implements QualityMetricsInterface {
 
     @Override
     public int nomontoMetric(int numProperties, int numClasses) {
-        int totalNomonto = 0;
         float nomonto = (float) numProperties / numClasses;
+        return getPunctuation(nomonto);
+    }
+
+    @Override
+    public int lcomontoMetric(int numRelationsThing, int subclassesOf) {
+        float lcomonto = (float) numRelationsThing / subclassesOf;
+        return getPunctuation(lcomonto);
+    }
+
+    private int getPunctuation(float nomonto) {
+        int total;
         nomonto = nomonto * 100;
 
         if (nomonto > 6 && nomonto <= 8) {
-            totalNomonto = SECOND_RANGE;
+            total = SECOND_RANGE;
         } else if (nomonto > 4 && nomonto <= 6) {
-            totalNomonto = THIRD_RANGE;
+            total = THIRD_RANGE;
         } else if (nomonto > 2 && nomonto <= 4) {
-            totalNomonto = QUARTER_RANGE;
+            total = QUARTER_RANGE;
         } else if (nomonto <= 2) {
-            totalNomonto = FIFTH_RANGE;
+            total = FIFTH_RANGE;
         } else {
-            totalNomonto = FIRST_RANGE;
+            total = FIRST_RANGE;
         }
-
-        return totalNomonto;
+        return total;
     }
 
 
-   @Override
+    @Override
    public int rfcontoMetric(int numProperties, int subclassesOf, int numClasses) {
-       int totalRfconto = 0;
+       int totalRfconto;
        float rfconto = (float) (numProperties + subclassesOf) / numClasses;
        rfconto = rfconto * 100;
+
        if (rfconto > 8 && rfconto <= 12) {
            totalRfconto = SECOND_RANGE;
        } else if (rfconto > 6 && rfconto <= 8) {
@@ -109,7 +115,7 @@ public class QualityMetrics implements QualityMetricsInterface {
 
    @Override
    public int cboontoMetric(int superclass, int numClasses, int numRelationsThing) {
-        int totalCboonto = 0;
+        int totalCboonto ;
         float cboonto = (float) superclass / (numClasses - numRelationsThing);
         if (cboonto > 6 && cboonto <= 8) {
             totalCboonto = SECOND_RANGE;
@@ -125,23 +131,4 @@ public class QualityMetrics implements QualityMetricsInterface {
         return totalCboonto;
     }
 
-   @Override
-   public int lcomontoMetric(int numRelationsThing, int subclassesOf) {
-       int totalLcomonto = 0;
-       float lcomonto = (float) numRelationsThing / subclassesOf;
-       lcomonto = lcomonto * 100;
-       if (lcomonto > 6 && lcomonto <= 8) {
-           totalLcomonto = SECOND_RANGE;
-       } else if (lcomonto > 4 && lcomonto <= 6) {
-           totalLcomonto = THIRD_RANGE;
-       } else if (lcomonto > 2 && lcomonto <= 4) {
-           totalLcomonto = QUARTER_RANGE;
-       } else if (lcomonto <= 2) {
-           totalLcomonto = FIFTH_RANGE;
-       }
-       else {
-           totalLcomonto = FIRST_RANGE;
-      }
-       return totalLcomonto;
-    }
 }

@@ -8,14 +8,12 @@ package decisionmakertool.beans;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import decisionmakertool.owl.LoadOntologyClass;
 import decisionmakertool.metrics.BaseMetrics;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import decisionmakertool.metrics.QualityMetrics;
 import decisionmakertool.service.QualityMetricsInterface;
 import decisionmakertool.model.MetricOntologyModel;
 import decisionmakertool.util.PathOntology;
 import decisionmakertool.util.UtilClass;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -23,93 +21,58 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
-import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLOntology;
-import org.semanticweb.owlapi.reasoner.OWLReasoner;
-import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
 
-/**
- *
- * @author gaby_
- */
 @ManagedBean
 @ViewScoped
-public class DashBoardBean implements Serializable {
-
-    private OWLOntology ontology;
-    private OWLOntology ontologyBase;
-    private OWLReasonerFactory factory = null;
-    private OWLReasoner reasoner;
-    private OWLDataFactory dataFactory;
-    private OWLReasonerFactory factoryBase = null;
-    private OWLReasoner reasonerBase;
-    private OWLDataFactory dataFactoryBase;
-    private List<MetricOntologyModel> listDataOntolgy;
-    private Integer[] data = {0, 0, 0, 0, 0, 0, 0, 0, 0};
-    private Integer[] data1 = {0, 0, 0, 0, 0, 0, 0, 0, 0};
-    private String json = "";
-    private String json1 = "";
+public class DashBoardBean {
+    private List<MetricOntologyModel> listDataOntology;
+    private Integer[] dataManualOntology = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+    private Integer[] dataAutomaticOntology = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+    private String resultMetricsManualOntology = "";
+    private String resultMetricsAutomaticOntology = "";
     private BaseMetrics baseMetricsOntology = new BaseMetrics();
-    private LoadOntologyClass loadBaseOntology = new LoadOntologyClass();
-    private LoadOntologyClass loadAutomaticOntology = new LoadOntologyClass();
-    private QualityMetricsInterface qualityMetrics;
-    private String areaPolygon1 = "";
-    private String areaPolygon2 = "";
+    private String areaPolygonManualOntology = "";
+    private String areaPolygonAutomaticOntology= "";
 
     @PostConstruct
     public void init() {
-        try {
-            if (this.listDataOntolgy == null) {
-                this.listDataOntolgy = new ArrayList<MetricOntologyModel>();
-
-            }
-            baseMetricsOntology = new BaseMetrics();
-            loadBaseOntology = new LoadOntologyClass();
-            loadAutomaticOntology = new LoadOntologyClass();
-
-            loadOntologies();
-        } catch (Exception e) {
+        if (this.listDataOntology == null) {
+            this.listDataOntology = new ArrayList<>();
         }
 
-        //  PathOntology pathAutomaticOntology = new PathOntology();
-        //loadAutomaticOntology.validation(pathAutomaticOntology.getPath());
-        //if(loadAutomaticOntology.validationConsistency(pathAutomaticOntology.getPath())){
-        //   loadOntologies();
-        // }
+        baseMetricsOntology = new BaseMetrics();
+        loadOntologies();
+        loadGraphicMetrics();
     }
 
-    public void loadOntologies() {
+    private void loadOntologies() {
         // Load an ontology from local
-        PathOntology pathBaseOntoloy = new PathOntology();
+        PathOntology pathBaseOntology = new PathOntology();
         PathOntology pathAutomaticOntology = new PathOntology();
-        MetricOntologyModel metricsBaseOntology = new MetricOntologyModel();
-        MetricOntologyModel metricsAutomaticOntology = new MetricOntologyModel();
-
-        loadBaseOntology.loadOntology(pathBaseOntoloy.getPathBase());
-        loadAutomaticOntology.loadOntology(pathAutomaticOntology.getPath());
-
-        ontology = loadAutomaticOntology.getOntology();
-        ontologyBase = loadBaseOntology.getOntology();
-        reasoner = loadAutomaticOntology.getReasoner();
-        reasonerBase = loadBaseOntology.getReasoner();
-        dataFactory = loadAutomaticOntology.getDataFactory();
-        dataFactoryBase = loadBaseOntology.getDataFactory();
-
-        loadBaseMetricsOntology(ontologyBase, dataFactoryBase, reasonerBase, "Base Ontology");
-        loadBaseMetricsOntology(ontology, dataFactory, reasoner, "Automatic Ontology");
-        //Data for the graphic
-        metricsBaseOntology = listDataOntolgy.get(0);
-        json = loadQualityMetrics(metricsBaseOntology, data);
-        metricsAutomaticOntology = listDataOntolgy.get(1);
-        json1 = loadQualityMetrics(metricsAutomaticOntology, data1);
-        double areaManual = UtilClass.getPolygonArea(data, 9);
-        double areaAutomathic = UtilClass.getPolygonArea(data1, 9);
-        areaPolygon1 = "Manual Ontology Area: " + String.format("%.2f", areaManual);
-        areaPolygon2 = "Automathic Ontology Area: " + String.format("%.2f", areaAutomathic);
-
+        LoadOntologyClass loadBaseOntology;
+        LoadOntologyClass loadAutomaticOntology;
+        loadBaseOntology = new LoadOntologyClass(pathBaseOntology.getPathBase());
+        loadAutomaticOntology = new LoadOntologyClass(pathAutomaticOntology.getPath());
+        OWLOntology ontology = loadAutomaticOntology.getOntology();
+        OWLOntology ontologyBase = loadBaseOntology.getOntology();
+        loadBaseMetricsOntology(ontologyBase, "Base Ontology");
+        loadBaseMetricsOntology(ontology,  "Automatic Ontology");
     }
 
-    public void loadBaseMetricsOntology(OWLOntology ontology, OWLDataFactory dataFactory, OWLReasoner reasoner, String name) {
+    private void loadGraphicMetrics(){
+        //Data for the graphic
+        MetricOntologyModel metricsBaseOntology = listDataOntology.get(0);
+        resultMetricsManualOntology = loadQualityMetrics(metricsBaseOntology, dataManualOntology);
+        MetricOntologyModel metricsAutomaticOntology = listDataOntology.get(1);
+        resultMetricsAutomaticOntology = loadQualityMetrics(metricsAutomaticOntology, dataAutomaticOntology);
+        double areaManual = UtilClass.getPolygonArea(dataManualOntology, 9);
+        double areaAutomatic = UtilClass.getPolygonArea(dataAutomaticOntology, 9);
+        areaPolygonManualOntology = "Manual Ontology Area: " + String.format("%.2f", areaManual);
+        areaPolygonAutomaticOntology = "Automatic Ontology Area: " + String.format("%.2f", areaAutomatic);
+    }
+
+    private void loadBaseMetricsOntology(OWLOntology ontology, String name) {
         MetricOntologyModel metricsOntology = new MetricOntologyModel();
         metricsOntology.setNameOntology(name);
         metricsOntology.setNumAnnotations(baseMetricsOntology.getNumAnnotation(ontology));
@@ -120,12 +83,12 @@ public class DashBoardBean implements Serializable {
         metricsOntology.setNumSuperclasses(baseMetricsOntology.getNumSuperClasses(ontology));
         metricsOntology.setRelationsThing(baseMetricsOntology.getNumRelationsOfThing(ontology));
         metricsOntology.setNumClassWithIndividuals(baseMetricsOntology.getNumClassesWithIndividuals(ontology));
-        listDataOntolgy.add(metricsOntology);
+        listDataOntology.add(metricsOntology);
 
     }
 
-    public String loadQualityMetrics(MetricOntologyModel metricsOntology, Integer[] data) {
-        String jsonAux = "";
+    private String loadQualityMetrics(MetricOntologyModel metricsOntology, Integer[] data) {
+        QualityMetricsInterface qualityMetrics = new QualityMetrics();
         int properties = metricsOntology.getNumProperties();
         int subclassOf = metricsOntology.getNumSubclassOf();
         int superclass = metricsOntology.getNumSuperclasses();
@@ -135,27 +98,18 @@ public class DashBoardBean implements Serializable {
         int relationsThing = metricsOntology.getRelationsThing();
         int classesWithIndividuals = metricsOntology.getNumClassWithIndividuals();
         ObjectMapper mapper = new ObjectMapper();
-        qualityMetrics = new QualityMetrics();
+        String jsonAux = "";
 
         try {
-            //RRonto metric
             data[0] = qualityMetrics.rrontoMetric(properties, subclassOf);
-            //INronto Metric
             data[1] = qualityMetrics.inrontoMetric(subclassOf, classes);
-            //ANNonton Metric
             data[2] = qualityMetrics.anontoMetric(annotations, classes);
-            //CRonto Metric
             data[3] = qualityMetrics.crontoMetric(instances, classes);
-            //RClass Metric
-            data[8] = qualityMetrics.richnessClassMetric(classesWithIndividuals, classes);
-            //Nomonto Metric
             data[4] = qualityMetrics.nomontoMetric(properties, classes);
-            //RFConto
             data[5] = qualityMetrics.rfcontoMetric(properties, superclass, classes);
-            //CBOOntoMetric
             data[6] = qualityMetrics.cboontoMetric(superclass, classes, relationsThing);
-            //LCOmonto Metric
             data[7] = qualityMetrics.lcomontoMetric(relationsThing, subclassOf);
+            data[8] = qualityMetrics.richnessClassMetric(classesWithIndividuals, classes);
 
             //Load metrics to data
             jsonAux = mapper.writeValueAsString(data);
@@ -166,61 +120,32 @@ public class DashBoardBean implements Serializable {
         return jsonAux;
     }
 
-    public List<MetricOntologyModel> getListDataOntolgy() {
-        return listDataOntolgy;
+    public List<MetricOntologyModel> getListDataOntology() {
+        return listDataOntology;
     }
 
-    public void setListDataOntolgy(List<MetricOntologyModel> listDataOntolgy) {
-        this.listDataOntolgy = listDataOntolgy;
+    public String getResultMetricsManualOnto() {
+        return resultMetricsManualOntology;
     }
 
-    public Integer[] getData() {
-
-        return data;
+    public String getResultMetricsAutomaticOntology() {
+        return resultMetricsAutomaticOntology;
     }
 
-    public void setData(Integer[] data) {
-        this.data = data;
+    public String getAreaPolygonManualOntology() {
+        return areaPolygonManualOntology;
     }
 
-    public String getJson() {
-        return json;
+    public void setAreaPolygonManualOntology(String areaPolygonManualOntology) {
+        this.areaPolygonManualOntology = areaPolygonManualOntology;
     }
 
-    public void setJson(String json) {
-        this.json = json;
+    public String getAreaPolygonAutomaticOntology() {
+        return areaPolygonAutomaticOntology;
     }
 
-    public Integer[] getData1() {
-        return data1;
-    }
-
-    public void setData1(Integer[] data1) {
-        this.data1 = data1;
-    }
-
-    public String getJson1() {
-        return json1;
-    }
-
-    public void setJson1(String json1) {
-        this.json1 = json1;
-    }
-
-    public String getAreaPolygon1() {
-        return areaPolygon1;
-    }
-
-    public void setAreaPolygon1(String areaPolygon1) {
-        this.areaPolygon1 = areaPolygon1;
-    }
-
-    public String getAreaPolygon2() {
-        return areaPolygon2;
-    }
-
-    public void setAreaPolygon2(String areaPolygon2) {
-        this.areaPolygon2 = areaPolygon2;
+    public void setAreaPolygonAutomaticOntology(String areaPolygonAutomaticOntology) {
+        this.areaPolygonAutomaticOntology = areaPolygonAutomaticOntology;
     }
 
 }

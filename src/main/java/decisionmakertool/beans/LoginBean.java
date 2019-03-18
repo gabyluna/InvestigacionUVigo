@@ -7,9 +7,12 @@ package decisionmakertool.beans;
 
 import decisionmakertool.util.SessionUtils;
 import decisionmakertool.dao.LoginDAO;
-import decisionmakertool.util.ValidatorUtil;
+import decisionmakertool.util.UtilClass;
+
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
@@ -18,16 +21,12 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 
-/**
- *
- * @author gaby_
- */
 @ManagedBean
 @SessionScoped
 public class LoginBean implements Serializable {
-
     private static final long serialVersionUID = 1094801825228386363L;
-
+    private static final String PATH_FILE_PROPERTIES = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/resources")
+            + "/loginKeys.properties";
     private String pwd;
     private String msg;
     private String user;
@@ -65,40 +64,32 @@ public class LoginBean implements Serializable {
         this.render = render;
     }
 
-    //validate login
-    public void validateUsernamePassword() throws IOException, Exception {
-
-        String key = "92AE31A79FEEB2A3"; //llave
-        String iv = "0123456789ABCDEF";
-        String encriptar = "";
-
-        encriptar = ValidatorUtil.encrypt(key, iv, pwd);
+    public void validateUsernamePassword() throws Exception {
+        Properties property=new Properties();
+        FileInputStream inputFile= new FileInputStream(PATH_FILE_PROPERTIES);
+        property.load(inputFile);
+        String key = property.getProperty("key");
+        String initializationVector = property.getProperty("iv");
+        String encrypt = UtilClass.encrypt(key, initializationVector, pwd);
 
         try {
-            boolean valid = LoginDAO.validate(user, encriptar);
+            boolean valid = LoginDAO.validate(user, encrypt);
+            FacesContext context = FacesContext.getCurrentInstance();
 
             if (valid) {
-
                 HttpSession session = SessionUtils.getSession();
                 session.setAttribute("username", user);
-                FacesContext contex = FacesContext.getCurrentInstance();
-                contex.getExternalContext().redirect("/DecisionMakerTool-1.0.0-SNAPSHOT/index.xhtml");
-                System.out.println("aqui");
-                //contex.getExternalContext().redirect("/DecisionMakerTool/index.xhtml");
-            } else {
 
+                context.getExternalContext().redirect("/DecisionMakerTool-1.0.0-SNAPSHOT/index.xhtml");
+            } else {
                 render = Boolean.TRUE;
                 msg = "Incorrect Username and Password";
-
                 FacesContext.getCurrentInstance().addMessage(
                         null,
                         new FacesMessage(FacesMessage.SEVERITY_WARN,
                                 "Incorrect Username and Password",
                                 "Please enter correct username and Password"));
-
-                FacesContext contex = FacesContext.getCurrentInstance();
-                //contex.getExternalContext().redirect("/DecisionMakerTool-1.0.0-SNAPSHOT/login.xhtml");
-                contex.getExternalContext().redirect("/DecisionMakerTool/login.xhtml");
+               context.getExternalContext().redirect("/DecisionMakerTool/login.xhtml");
             }
 
         } catch (IOException ex) {

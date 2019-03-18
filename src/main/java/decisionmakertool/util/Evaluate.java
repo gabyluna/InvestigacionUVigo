@@ -5,11 +5,8 @@
  */
 package decisionmakertool.util;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.util.Properties;
 
 import ionelvirgilpop.drontoapi.service.WebService;
 import ionelvirgilpop.drontoapi.util.PitfallSelector;
@@ -31,46 +28,9 @@ public class Evaluate {
 
     }
 
-    public static double polygonArea(double X[], double Y[],
-            int n) {
-        // Initialze area 
-        double area = 0.0;
 
-        // Calculate value of shoelace formula 
-        int j = n - 1;
-        for (int i = 0; i < n; i++) {
-            area += (X[j] + X[i]) * (Y[j] - Y[i]);
 
-            // j is previous vertex to i 
-            j = i;
-        }
 
-        // Return absolute value 
-        return Math.abs(area / 2.0);
-    }
-
-    public static void coordenadasXY(int dimension[], int n) {
-        double X[] = new double[n];
-        double Y[] = new double[n];
-        double angulo = 0;
-        double intervalo = 0;
-        intervalo = 360 / n;
-        angulo = intervalo;
-
-        //Coordenates X
-        for (int i = 0; i < n; i++) {
-            X[i] = dimension[i] * Math.cos(Math.toRadians(angulo));
-            Y[i] = dimension[i] * Math.sin(Math.toRadians(angulo));
-            Y[i] = format(Y[i]);
-            angulo = angulo + intervalo;
-        }
-
-        System.out.println("area:" + polygonArea(X, Y, n));
-    }
-
-    private static double format(double value) {
-        return (double) Math.round(value * 1000000) / 1000000; //you can change this to round up the value(for two position use 100...)
-    }
 
     public void evaluate() {
         //Create a client that communicates with the OOPS! web service provider.
@@ -99,12 +59,12 @@ public class Evaluate {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         /*Evaluate ex01 = new Evaluate();
 		ex01.evaluate();*/
         //int dimensiones[] = {1,5,5,2,3,3,1,1,1};
         //int dimensiones[] = {1,1,1,3,3,2,5,5,1};
-        int dimensiones[] = {1, 5, 5, 5, 1, 1, 1, 5, 5};
+        /*int dimensiones[] = {1, 5, 5, 5, 1, 1, 1, 5, 5};
         int n = 9;
         coordenadasXY(dimensiones, n);
 
@@ -112,5 +72,10 @@ public class Evaluate {
         double Y[] = {0, 64, 0.98, 0.86, 1.02, -1.02, -1.73, -4.92, -3.21, 0};
 
         //System.out.println(polygonArea(X, Y, n)); 
+    }*/
+
+
+
+
     }
 }

@@ -5,115 +5,112 @@
  */
 package decisionmakertool.metrics;
 
-import decisionmakertool.util.OwlUtil;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import org.semanticweb.owlapi.model.OWLDataFactory;
-import org.semanticweb.owlapi.model.OWLOntology;
-import org.semanticweb.owlapi.reasoner.OWLReasoner;
+import java.util.*;
 
-/**
- *
- * @author Gaby
- */
+import decisionmakertool.util.UtilClass;
+import org.semanticweb.owlapi.model.*;
+import org.semanticweb.owlapi.util.DefaultPrefixManager;
+
 public class BaseMetrics {
-
-    private int numSuperClasses;
-    private int numClasses;
-    private int numSubClasses;
-    private int numInstances;
-    private int numProperties;
-    private int numAnnotation;
-    private int numRelationsOfThing;
-    private int numClassesWithIndividuals;
-    private final OwlUtil print = new OwlUtil();
+    private final DefaultPrefixManager pm = new DefaultPrefixManager(
+            "http://www.text2onto.org#");
 
     public BaseMetrics() {
+        //
     }
 
     public int getNumSuperClasses(OWLOntology ontology) {
-        Set<String> hs = new HashSet<>();
-        List<String> listSuperClass;
-        listSuperClass = print.getSuperClasses(ontology);
-        listSuperClass = removeRepeatClasses(listSuperClass);
-        numSuperClasses = listSuperClass.size();
-        System.out.println("# superclases:" + numSuperClasses);
-        return numSuperClasses;
+        List<String> listSupClass = new ArrayList<>();
+        Set<OWLClass> classes = ontology.getClassesInSignature();
+
+        for (OWLClass classAux : classes) {
+            Set<OWLClassExpression> superclasses = classAux.getSuperClasses(ontology);
+            for (OWLClassExpression sc : superclasses) {
+                listSupClass.add(sc.getSignature().toString());
+            }
+        }
+
+        return listSupClass.size();
     }
 
     public int getNumClasses(OWLOntology ontology) {
-        List<String> listClasses = new ArrayList<String>();
-        listClasses = print.getClasses(ontology);
-        numClasses = listClasses.size();
-        System.out.println("# clases:" + numClasses);
-        return numClasses;
+        List<String> listClasses = new ArrayList<>();
+        Set<OWLClass> classes = ontology.getClassesInSignature();
+
+        for (OWLClass classAux : classes) {
+            listClasses.add(pm.getShortForm(classAux).replaceAll(":", ""));
+    }
+
+        return listClasses.size();
     }
 
     public int getNumSubClasses(OWLOntology ontology) {
-        List<String> lisSubclasses = new ArrayList<String>();
-        Set<String> hs = new HashSet<>();
-        lisSubclasses = print.getSubClassOfAll(ontology);
-        lisSubclasses = removeRepeatClasses(lisSubclasses);
-        numSubClasses = lisSubclasses.size();
-        System.out.println("# subclases:" + numSubClasses);
-        return numSubClasses;
+        List<String> lisSubclasses = new ArrayList<>();
+        Set<OWLSubClassOfAxiom> subClasses = ontology.getAxioms(AxiomType.SUBCLASS_OF);
+
+        for (OWLSubClassOfAxiom clase : subClasses) {
+            lisSubclasses.add(clase.getSignature().toString());
+        }
+        UtilClass.removeRepeatClasses(lisSubclasses);
+        return lisSubclasses.size();
     }
 
     public int getNumInstances(OWLOntology ontology) {
-        List<String> listInstances = new ArrayList<String>();
-        Set<String> hs = new HashSet<>();
-        //instancias
-        listInstances = print.printInd(ontology);
-        listInstances = removeRepeatClasses(listInstances);
-        numInstances = listInstances.size();
-        System.out.println("# instancias:" + numInstances);
+        List<String> listInstances = new ArrayList<>();
+        Set<OWLNamedIndividual> individualsSignature = ontology.getIndividualsInSignature();
+        for (OWLNamedIndividual ind : individualsSignature) {
+            String []individuals = UtilClass.cutString(ind.toString());
 
-        return numInstances;
+            for (int i = 0; i < (individuals.length - 1); i++) {
+                listInstances.add(individuals[1].replaceAll(">", ""));
+            }
+        }
+        Collections.sort(listInstances);
+        UtilClass.removeRepeatClasses(listInstances);
+
+        return listInstances.size();
     }
 
     public int getNumProperties(OWLOntology ontology) {
-        List<String> listProperties = new ArrayList<String>();
-        listProperties = print.getProperties(ontology);
-        numProperties = listProperties.size();
-        System.out.println("# propiedades:" + numProperties);
-        return numProperties;
+        List<String> listProperties = new ArrayList<>();
+        for (OWLObjectProperty p : ontology.getObjectPropertiesInSignature()) {
+            listProperties.add(pm.getShortForm(p).replaceAll(":", ""));
+        }
+        return listProperties.size();
     }
 
     public int getNumAnnotation(OWLOntology ontology) {
-        List<String> listAnnotations;
-        listAnnotations = print.getAnnotation(ontology);
-        numAnnotation = listAnnotations.size();
-        System.out.println("# anotaciones:" + numAnnotation);
-
-        return numAnnotation;
+        List<String> listAnnotations = new ArrayList<>();
+        Set<OWLAnnotationAssertionAxiom> annotations = ontology.getAxioms(AxiomType.ANNOTATION_ASSERTION);
+        for (OWLAnnotationAssertionAxiom anotation : annotations) {
+            listAnnotations.add(anotation.getValue().toString());
+        }
+        return listAnnotations.size();
     }
 
     public int getNumRelationsOfThing(OWLOntology ontology) {
-        List<String> listRelationsThing;
-        listRelationsThing = print.getSubClassOfThing(ontology);
-        numRelationsOfThing = listRelationsThing.size();
-        System.out.println("# relacionesThing:" + numRelationsOfThing);
-        return numRelationsOfThing;
+        List<String> listRelationsThing = new ArrayList<>();
+        Set<OWLSubClassOfAxiom> subClasses = ontology.getAxioms(AxiomType.SUBCLASS_OF);
+        for (OWLSubClassOfAxiom subClassAux : subClasses) {
+            if (subClassAux.getSignature().toString().contains("owl:Thing")) {
+                listRelationsThing.add(subClassAux.getSignature().toString());
+            }
+        }
+        return listRelationsThing.size();
     }
 
     public int getNumClassesWithIndividuals(OWLOntology ontology) {
-        List<String> listClassWithIndividuals = new ArrayList<String>();
-        listClassWithIndividuals = print.printIndByClass(ontology);
-        numClassesWithIndividuals = listClassWithIndividuals.size();
-        System.out.println("# numClassesWithIndividuals:" + numClassesWithIndividuals);
-        return numClassesWithIndividuals;
-    }
+        List<String> listClassWithIndividuals = new ArrayList<>();
+        Set<OWLClass> classes = ontology.getClassesInSignature();
 
-     public List<String> removeRepeatClasses(List<String>  listClassesRepeat){
-         List<String> listResult = new ArrayList<>();
-         Set<String> hs = new HashSet<>();
-         hs.addAll(listClassesRepeat);
-         listClassesRepeat.clear();
-         listClassesRepeat.addAll(hs);
-         listResult = listClassesRepeat;
-         return  listResult;
+        for (OWLClass classAux : classes) {
+            Set<OWLIndividual> individuals = classAux.getIndividuals(ontology);
+            if (!individuals.isEmpty()) {
+                listClassWithIndividuals.add(classAux.getSignature().toString());
+            }
+
+        }
+        return listClassWithIndividuals.size();
     }
 
 }

@@ -8,7 +8,6 @@ package decisionmakertool.beans;
 import decisionmakertool.owl.LoadOntologyClass;
 import decisionmakertool.util.PathOntology;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,18 +24,15 @@ import org.primefaces.model.UploadedFile;
 @ManagedBean
 @ViewScoped
 public class FileUploadBean {
-
     private UploadedFile file;
-    private String realPath = "";
     private String chooseMode;
-    private LoadOntologyClass loadOntology = new LoadOntologyClass();
-    private String answer = "";
+    private LoadOntologyClass loadOntology;
+    private String answer;
 
     @PostConstruct
     public void init() {
         answer = "";
         loadOntology = new LoadOntologyClass();
-
     }
 
     public UploadedFile getFile() {
@@ -58,46 +54,26 @@ public class FileUploadBean {
     public void upload() {
         if (file != null) {
             try {
-                copyFile(file.getFileName(), file.getInputstream());
-                FacesMessage message = new FacesMessage("Succesful", file.getFileName() + " is uploaded.");
+                copyFile(file.getInputstream());
+                FacesMessage message = new FacesMessage("Successful", file.getFileName() + " is uploaded.");
                 FacesContext.getCurrentInstance().addMessage(null, message);
 
             } catch (IOException e) {
-                e.printStackTrace();
+                Logger.getLogger(FileUploadBean.class.getName()).log(Level.SEVERE, null, e);
             }
         }
     }
 
-    public void copyFile(String fileName, InputStream in) throws FileNotFoundException {
+    private void copyFile(InputStream in) {
+        String realPath = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/resources");
 
-        realPath = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/resources"); // Sustituye "/" por el directorio ej: "/upload"
-
-        System.out.println("path:" + realPath);
-        try {
+         try {
             // write the inputStream to a FileOutputStream
             if (chooseMode.equals("A")) {
-                OutputStream out = new FileOutputStream(new File(realPath + "/" + "ontoFinal.owl"));
-                int read = 0;
-                byte[] bytes = new byte[1024];
-                while ((read = in.read(bytes)) != -1) {
-                    out.write(bytes, 0, read);
-                }
-                in.close();
-                out.flush();
-                out.close();
-                System.out.println("New file created!");
+                loadFile(realPath + "/" + "ontoFinal.owl",in);
             }
             if (chooseMode.equals("B")) {
-                OutputStream out = new FileOutputStream(new File(realPath + "/" + "ontoBase.owl"));
-                int read = 0;
-                byte[] bytes = new byte[1024];
-                while ((read = in.read(bytes)) != -1) {
-                    out.write(bytes, 0, read);
-                }
-                in.close();
-                out.flush();
-                out.close();
-                System.out.println("New file created!");
+                loadFile(realPath + "/" + "ontoBase.owl",in);
             }
 
         } catch (IOException ex) {
@@ -105,21 +81,36 @@ public class FileUploadBean {
         }
     }
 
+    private void loadFile(String path, InputStream in) throws IOException {
+        OutputStream out = new FileOutputStream(new File(path));
+        int read;
+        byte[] bytes = new byte[1024];
+
+        try{
+            while ((read = in.read(bytes)) != -1) {
+                out.write(bytes, 0, read);
+            }
+
+            in.close();
+            out.flush();
+        } catch (IOException e) {
+            Logger.getLogger(FileUploadBean.class.getName()).log(Level.SEVERE, null, e);
+        }finally {
+            out.close();
+        }
+
+    }
+
     public void validation() {
         PathOntology pathOntologyBase = new PathOntology();
         PathOntology pathOntologyAuto = new PathOntology();
-        loadOntology = new LoadOntologyClass();
 
         if (chooseMode.equals("A")) {
-            System.out.println("pathBAuto:" + pathOntologyAuto.getPath());
             answer = loadOntology.validationConsistency(pathOntologyAuto.getPath());
-            System.out.println("answer:" + answer);
         }
 
         if (chooseMode.equals("B")) {
-            System.out.println("pathBBase:" + pathOntologyBase.getPathBase());
             answer = loadOntology.validationConsistency(pathOntologyBase.getPathBase());
-            System.out.println("answer:" + answer);
         }
     }
 
