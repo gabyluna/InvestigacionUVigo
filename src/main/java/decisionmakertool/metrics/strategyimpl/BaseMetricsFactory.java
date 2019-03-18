@@ -2,7 +2,7 @@ package decisionmakertool.metrics.strategyimpl;
 
 public class BaseMetricsFactory {
 
-    public  BaseMetricsStrategy getBaseMetric(BaseMetric baseMetricTag){
+    public static BaseMetricsStrategy getBaseMetric(BaseMetric baseMetricTag){
         BaseMetricsStrategy baseMetricsStrategy = null ;
 
         switch(baseMetricTag) {

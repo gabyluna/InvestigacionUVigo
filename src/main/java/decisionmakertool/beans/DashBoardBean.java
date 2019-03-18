@@ -75,22 +75,21 @@ public class DashBoardBean {
         metricsOntology.setNameOntology(name);
 
         BaseMetricsStrategy baseMetricsStrategy;
-        BaseMetricsFactory baseMetricsFactory = new BaseMetricsFactory();
-        baseMetricsStrategy = baseMetricsFactory.getBaseMetric(BaseMetric.ANNOTATIONS);
+        baseMetricsStrategy = BaseMetricsFactory.getBaseMetric(BaseMetric.ANNOTATIONS);
         metricsOntology.setNumAnnotations(baseMetricsStrategy.calculateMetric(ontology));
-        baseMetricsStrategy = baseMetricsFactory.getBaseMetric(BaseMetric.PROPERTIES);
+        baseMetricsStrategy = BaseMetricsFactory.getBaseMetric(BaseMetric.PROPERTIES);
         metricsOntology.setNumProperties(baseMetricsStrategy.calculateMetric(ontology));
-        baseMetricsStrategy = baseMetricsFactory.getBaseMetric(BaseMetric.CLASSES);
+        baseMetricsStrategy = BaseMetricsFactory.getBaseMetric(BaseMetric.CLASSES);
         metricsOntology.setNumClasses(baseMetricsStrategy.calculateMetric(ontology));
-        baseMetricsStrategy = baseMetricsFactory.getBaseMetric(BaseMetric.INSTANCES);
+        baseMetricsStrategy = BaseMetricsFactory.getBaseMetric(BaseMetric.INSTANCES);
         metricsOntology.setNumInstances(baseMetricsStrategy.calculateMetric(ontology));
-        baseMetricsStrategy = baseMetricsFactory.getBaseMetric(BaseMetric.SUBCLASSES);
+        baseMetricsStrategy = BaseMetricsFactory.getBaseMetric(BaseMetric.SUBCLASSES);
         metricsOntology.setNumSubclassOf(baseMetricsStrategy.calculateMetric(ontology));
-        baseMetricsStrategy = baseMetricsFactory.getBaseMetric(BaseMetric.SUPERCLASSES);
+        baseMetricsStrategy = BaseMetricsFactory.getBaseMetric(BaseMetric.SUPERCLASSES);
         metricsOntology.setNumSuperclasses(baseMetricsStrategy.calculateMetric(ontology));
-        baseMetricsStrategy = baseMetricsFactory.getBaseMetric(BaseMetric.RELATIONS_THING);
+        baseMetricsStrategy = BaseMetricsFactory.getBaseMetric(BaseMetric.RELATIONS_THING);
         metricsOntology.setRelationsThing(baseMetricsStrategy.calculateMetric(ontology));
-        baseMetricsStrategy = baseMetricsFactory.getBaseMetric(BaseMetric.CLASS_WITH_INDIVIDUALS);
+        baseMetricsStrategy = BaseMetricsFactory.getBaseMetric(BaseMetric.CLASS_WITH_INDIVIDUALS);
         metricsOntology.setNumClassWithIndividuals(baseMetricsStrategy.calculateMetric(ontology));
 
         listDataOntology.add(metricsOntology);
