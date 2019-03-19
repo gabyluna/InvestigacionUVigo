@@ -61,7 +61,8 @@ public abstract class SmellErrorTemplate {
     }
 
     public void redundandyErrors(String path) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
+        //TODO To change body of generated methods, choose Tools | Templates.
     }
 
     public  abstract List<Pitfall> getListSmellErrors(String path);

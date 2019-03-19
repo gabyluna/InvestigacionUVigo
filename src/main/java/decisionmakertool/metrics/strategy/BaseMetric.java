@@ -1,4 +1,4 @@
-package decisionmakertool.metrics.strategyimpl;
+package decisionmakertool.metrics.strategy;
 
 public enum BaseMetric {
 

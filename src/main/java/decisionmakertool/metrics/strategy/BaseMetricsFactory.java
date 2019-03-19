@@ -1,4 +1,6 @@
-package decisionmakertool.metrics.strategyimpl;
+package decisionmakertool.metrics.strategy;
+
+import decisionmakertool.metrics.strategy.impl.*;
 
 public class BaseMetricsFactory {
 
@@ -30,8 +32,6 @@ public class BaseMetricsFactory {
             case CLASSES:
                 baseMetricsStrategy = new NumClasses();
                 break;
-
-
         }
         return baseMetricsStrategy;
     }

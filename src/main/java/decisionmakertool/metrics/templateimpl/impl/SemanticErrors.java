@@ -1,5 +1,6 @@
-package decisionmakertool.metrics.templateimpl;
+package decisionmakertool.metrics.templateimpl.impl;
 
+import decisionmakertool.metrics.templateimpl.SmellErrorTemplate;
 import ionelvirgilpop.drontoapi.except.UnexpectedErrorException;
 import ionelvirgilpop.drontoapi.pitfallmanager.Pitfall;
 
@@ -9,7 +10,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class SemanticErrors extends  SmellErrorTemplate {
+public class SemanticErrors extends SmellErrorTemplate {
 
     private static final Integer []arrayPitfallsSemantic = {1,2,7,12,19,20,22,30,32};
 

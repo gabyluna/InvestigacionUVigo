@@ -7,7 +7,8 @@ package decisionmakertool.beans;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import decisionmakertool.metrics.*;
-import decisionmakertool.metrics.strategyimpl.*;
+import decisionmakertool.metrics.strategy.*;
+import decisionmakertool.model.MetricOntologyBuilder;
 import decisionmakertool.owl.LoadOntologyClass;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import decisionmakertool.service.QualityMetricsInterface;
@@ -71,26 +72,28 @@ public class DashBoardBean {
     }
 
     private void loadBaseMetricsOntology(OWLOntology ontology, String name) {
-        MetricOntologyModel metricsOntology = new MetricOntologyModel();
-        metricsOntology.setNameOntology(name);
-
         BaseMetricsStrategy baseMetricsStrategy;
         baseMetricsStrategy = BaseMetricsFactory.getBaseMetric(BaseMetric.ANNOTATIONS);
-        metricsOntology.setNumAnnotations(baseMetricsStrategy.calculateMetric(ontology));
+        int annotations = baseMetricsStrategy.calculateMetric(ontology);
         baseMetricsStrategy = BaseMetricsFactory.getBaseMetric(BaseMetric.PROPERTIES);
-        metricsOntology.setNumProperties(baseMetricsStrategy.calculateMetric(ontology));
+        int properties = baseMetricsStrategy.calculateMetric(ontology);
         baseMetricsStrategy = BaseMetricsFactory.getBaseMetric(BaseMetric.CLASSES);
-        metricsOntology.setNumClasses(baseMetricsStrategy.calculateMetric(ontology));
+        int classes = baseMetricsStrategy.calculateMetric(ontology);
         baseMetricsStrategy = BaseMetricsFactory.getBaseMetric(BaseMetric.INSTANCES);
-        metricsOntology.setNumInstances(baseMetricsStrategy.calculateMetric(ontology));
+        int instances = baseMetricsStrategy.calculateMetric(ontology);
         baseMetricsStrategy = BaseMetricsFactory.getBaseMetric(BaseMetric.SUBCLASSES);
-        metricsOntology.setNumSubclassOf(baseMetricsStrategy.calculateMetric(ontology));
+        int subClasses = baseMetricsStrategy.calculateMetric(ontology);
         baseMetricsStrategy = BaseMetricsFactory.getBaseMetric(BaseMetric.SUPERCLASSES);
-        metricsOntology.setNumSuperclasses(baseMetricsStrategy.calculateMetric(ontology));
+        int superClasses = baseMetricsStrategy.calculateMetric(ontology);
         baseMetricsStrategy = BaseMetricsFactory.getBaseMetric(BaseMetric.RELATIONS_THING);
-        metricsOntology.setRelationsThing(baseMetricsStrategy.calculateMetric(ontology));
+        int relationThing = baseMetricsStrategy.calculateMetric(ontology);
         baseMetricsStrategy = BaseMetricsFactory.getBaseMetric(BaseMetric.CLASS_WITH_INDIVIDUALS);
-        metricsOntology.setNumClassWithIndividuals(baseMetricsStrategy.calculateMetric(ontology));
+        int classWithIndividuals = baseMetricsStrategy.calculateMetric(ontology);
+
+        MetricOntologyModel metricsOntology = new MetricOntologyBuilder(name).setNumAnnotations(annotations).
+                setNumProperties(properties).setNumClasses(classes).setNumInstances(instances).
+                setNumSubclassOf(subClasses).setNumSuperClasses(superClasses).setRelationsThing(relationThing).
+                setNumClassWithIndividuals(classWithIndividuals).build();
 
         listDataOntology.add(metricsOntology);
     }

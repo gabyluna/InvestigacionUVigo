@@ -1,4 +1,4 @@
-package decisionmakertool.metrics.strategyimpl;
+package decisionmakertool.metrics.strategy;
 
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.util.DefaultPrefixManager;

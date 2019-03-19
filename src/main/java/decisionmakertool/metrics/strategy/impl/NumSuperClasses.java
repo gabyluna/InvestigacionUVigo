@@ -1,5 +1,6 @@
-package decisionmakertool.metrics.strategyimpl;
+package decisionmakertool.metrics.strategy.impl;
 
+import decisionmakertool.metrics.strategy.BaseMetricsStrategy;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLOntology;
