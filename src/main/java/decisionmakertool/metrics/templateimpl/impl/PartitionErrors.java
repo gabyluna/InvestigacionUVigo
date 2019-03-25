@@ -17,7 +17,7 @@ public class PartitionErrors extends SmellErrorTemplate {
         List<Pitfall> listResult = new ArrayList<>();
 
         try {
-            SmellErrorTemplate.loadPitfallSelector(path, listResult, arrayPitfallsPartition);
+            listResult = SmellErrorTemplate.getPitfallsSelector(path, arrayPitfallsPartition);
         } catch (UnexpectedErrorException | IOException ex) {
             Logger.getLogger(PartitionErrors.class.getName()).log(Level.SEVERE, null, ex);
         }

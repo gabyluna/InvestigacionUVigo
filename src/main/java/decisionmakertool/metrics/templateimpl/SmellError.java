@@ -6,5 +6,4 @@ public enum SmellError {
     INCOMPLETENESS,
     PARTITION,
     SEMANTIC,
-
 }

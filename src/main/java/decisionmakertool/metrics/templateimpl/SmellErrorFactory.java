@@ -7,6 +7,10 @@ import decisionmakertool.metrics.templateimpl.impl.SemanticErrors;
 
 public class SmellErrorFactory {
 
+    private SmellErrorFactory(){
+
+    }
+
     public static SmellErrorTemplate getSmellError(SmellError smellErrorTag){
         SmellErrorTemplate smellErrorTemplate = null;
 

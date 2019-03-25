@@ -23,7 +23,7 @@ import org.semanticweb.owl.explanation.api.ExplanationGenerator;
 import org.semanticweb.owl.explanation.impl.blackbox.checker.InconsistentOntologyExplanationGeneratorFactory;
 import uk.ac.manchester.cs.jfact.JFactFactory;
 
-public class LoadOntologyClass {
+public class OntologyUtil {
 
     private OWLOntology ontology;
     private OWLOntologyManager manager;
@@ -31,11 +31,11 @@ public class LoadOntologyClass {
     private OWLReasoner reasoner;
     private OWLDataFactory dataFactory = null;
 
-    public LoadOntologyClass() {
+    public OntologyUtil() {
 
     }
 
-    public LoadOntologyClass(String path) {
+    public OntologyUtil(String path) {
         try {
             File file = new File(path);
             manager = OWLManager.createOWLOntologyManager();
@@ -44,7 +44,7 @@ public class LoadOntologyClass {
             reasoner = this.factory.createReasoner(ontology);
             dataFactory = manager.getOWLDataFactory();
         } catch (OWLOntologyCreationException ex) {
-            Logger.getLogger(LoadOntologyClass.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(OntologyUtil.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -75,7 +75,7 @@ public class LoadOntologyClass {
                 answer += getAnswerExplanations(answer);
             }
         } catch (OWLOntologyCreationException | InconsistentOntologyException ex) {
-            Logger.getLogger(LoadOntologyClass.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(OntologyUtil.class.getName()).log(Level.SEVERE, null, ex);
         }
         return answer;
     }

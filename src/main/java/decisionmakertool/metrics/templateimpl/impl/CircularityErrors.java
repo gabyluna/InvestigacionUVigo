@@ -17,7 +17,7 @@ public class CircularityErrors extends SmellErrorTemplate {
         List<Pitfall> listResult = new ArrayList<>();
 
         try {
-            SmellErrorTemplate.loadPitfallSelector(path, listResult, arrayPitfallsCircularity);
+            listResult = SmellErrorTemplate.getPitfallsSelector(path, arrayPitfallsCircularity);
         } catch (UnexpectedErrorException | IOException ex) {
             Logger.getLogger(CircularityErrors.class.getName()).log(Level.SEVERE, null, ex);
         }

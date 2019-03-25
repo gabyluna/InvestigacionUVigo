@@ -1,15 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package decisionmakertool.beans;
 
 import decisionmakertool.metrics.templateimpl.*;
-import decisionmakertool.metrics.templateimpl.impl.CircularityErrors;
-import decisionmakertool.metrics.templateimpl.impl.IncompletenessErrors;
-import decisionmakertool.metrics.templateimpl.impl.PartitionErrors;
-import decisionmakertool.metrics.templateimpl.impl.SemanticErrors;
 import decisionmakertool.util.PathOntology;
 import ionelvirgilpop.drontoapi.pitfallmanager.AffectedElement;
 import ionelvirgilpop.drontoapi.pitfallmanager.Pitfall;
@@ -27,7 +18,10 @@ public class PitfallsBean {
     private List<Pitfall> listPitfalls = new ArrayList<>();
     private Pitfall selectedPitfall = new Pitfall(0);
     private List<AffectedElement> listAffectedElements = new ArrayList<>();
-    private PathOntology pathAutomaticOntology = new PathOntology();
+    private PathOntology path = new PathOntology();
+    private String pathOntology = "";
+    private AffectedElement affectedElementSelected;
+    private List<AffectedElement> listSelectedElements;
 
     @PostConstruct
     public void init() {
@@ -37,25 +31,18 @@ public class PitfallsBean {
         if (this.listAffectedElements == null) {
             this.listAffectedElements = new ArrayList<>();
         }
-
-        loadPitfalls();
     }
 
-    private void loadPitfalls() {
+    public void loadPitfalls(){
         listPitfalls = new ArrayList<>();
-        validationListPitfalls();
-    }
-
-    private void validationListPitfalls(){
-        SmellErrorTemplate smellErrorTemplate;
-        smellErrorTemplate = SmellErrorFactory.getSmellError(SmellError.CIRCULARITY);
-        List<Pitfall>  listCircularityErrors = smellErrorTemplate.getListSmellErrors(pathAutomaticOntology.getPath());
-        smellErrorTemplate = SmellErrorFactory.getSmellError(SmellError.PARTITION);
-        List<Pitfall> listPartitionErrors = smellErrorTemplate.getListSmellErrors(pathAutomaticOntology.getPath());
-        smellErrorTemplate = SmellErrorFactory.getSmellError(SmellError.SEMANTIC);
-        List<Pitfall> listSemanticErrors = smellErrorTemplate.getListSmellErrors(pathAutomaticOntology.getPath());
-        smellErrorTemplate = SmellErrorFactory.getSmellError(SmellError.INCOMPLETENESS);
-        List<Pitfall> listIncompletenessErrors = smellErrorTemplate.getListSmellErrors(pathAutomaticOntology.getPath());
+        SmellErrorTemplate circularityErrorTemplate = SmellErrorFactory.getSmellError(SmellError.CIRCULARITY);
+        List<Pitfall>  listCircularityErrors = circularityErrorTemplate.getListSmellErrors(pathOntology);
+        SmellErrorTemplate partitionErrorTemplate = SmellErrorFactory.getSmellError(SmellError.PARTITION);
+        List<Pitfall> listPartitionErrors = partitionErrorTemplate.getListSmellErrors(pathOntology);
+        SmellErrorTemplate semanticErrorTemplate = SmellErrorFactory.getSmellError(SmellError.SEMANTIC);
+        List<Pitfall> listSemanticErrors = semanticErrorTemplate.getListSmellErrors(pathOntology);
+        SmellErrorTemplate incompletenessErrorTemplate = SmellErrorFactory.getSmellError(SmellError.INCOMPLETENESS);
+        List<Pitfall> listIncompletenessErrors = incompletenessErrorTemplate.getListSmellErrors(pathOntology);
 
         addPitfallsAtList(listCircularityErrors);
         addPitfallsAtList(listPartitionErrors);
@@ -77,9 +64,7 @@ public class PitfallsBean {
     }
 
     public void loadAffectedElements(Pitfall selectedPitfall1) {
-        SmellErrorTemplate smellErrorTemplate = null;
-        listAffectedElements = SmellErrorFactory.getSmellError(SmellError.CIRCULARITY).
-                getElementsSmellErrors(pathAutomaticOntology.getPath(),selectedPitfall1);
+       listAffectedElements = SmellErrorTemplate.getElementsSmellErrors(pathOntology,selectedPitfall1);
     }
 
     public List<Pitfall> getListPitfalls() {
@@ -104,5 +89,38 @@ public class PitfallsBean {
 
     public void setListAffectedElements(List<AffectedElement> listAffectedElements) {
         this.listAffectedElements = listAffectedElements;
+    }
+
+    public String getPathOntology() {
+        return pathOntology;
+    }
+
+    public void setPathOntology(String pathOntology) {
+        this.pathOntology = pathOntology;
+    }
+
+    public PathOntology getPath() {
+        return path;
+    }
+
+    public void setPath(PathOntology path) {
+        this.path = path;
+    }
+
+
+    public AffectedElement getAffectedElementSelected() {
+        return affectedElementSelected;
+    }
+
+    public void setAffectedElementSelected(AffectedElement affectedElementSelected) {
+        this.affectedElementSelected = affectedElementSelected;
+    }
+
+    public List<AffectedElement> getListSelectedElements() {
+        return listSelectedElements;
+    }
+
+    public void setListSelectedElements(List<AffectedElement> listSelectedElements) {
+        this.listSelectedElements = listSelectedElements;
     }
 }

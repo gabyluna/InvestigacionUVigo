@@ -15,7 +15,7 @@ public class IncompletenessErrors extends SmellErrorTemplate {
     public List<Pitfall> getListSmellErrors(String path){
         List<Pitfall> listResult = new ArrayList<>();
         try {
-            SmellErrorTemplate.loadPitfallSelector(path, listResult, arrayPitfallsIncompleteness);
+            listResult = SmellErrorTemplate.getPitfallsSelector(path, arrayPitfallsIncompleteness);
         } catch (UnexpectedErrorException | IOException ex) {
             Logger.getLogger(IncompletenessErrors.class.getName()).log(Level.SEVERE, null, ex);
         }

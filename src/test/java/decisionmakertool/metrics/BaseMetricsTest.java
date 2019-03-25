@@ -1,7 +1,7 @@
 package decisionmakertool.metrics;
 
 import decisionmakertool.metrics.strategy.*;
-import decisionmakertool.owl.LoadOntologyClass;
+import decisionmakertool.owl.OntologyUtil;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,7 +14,7 @@ public class BaseMetricsTest {
 
     @Before
     public void initialize() {
-        LoadOntologyClass loadOntology = new LoadOntologyClass("C:/Users/Gaby/Desktop/Vbox/OntoFinales/ontoFinal.owl");
+        OntologyUtil loadOntology = new OntologyUtil("C:/Users/Gaby/Desktop/Vbox/OntoFinales/ontoFinal.owl");
         ontologyActual = loadOntology.getOntology();
         baseMetricsFactory = new BaseMetricsFactory();
     }

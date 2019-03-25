@@ -4,7 +4,7 @@ import decisionmakertool.metrics.strategy.impl.*;
 
 public class BaseMetricsFactory {
 
-    public static BaseMetricsStrategy getBaseMetric(BaseMetric baseMetricTag){
+    public  static BaseMetricsStrategy getBaseMetric(BaseMetric baseMetricTag){
         BaseMetricsStrategy baseMetricsStrategy = null ;
 
         switch(baseMetricTag) {

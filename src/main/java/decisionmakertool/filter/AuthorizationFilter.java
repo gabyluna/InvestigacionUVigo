@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package decisionmakertool.filter;
 
 import java.util.logging.Level;
@@ -20,10 +15,10 @@ import javax.servlet.http.HttpSession;
 @WebFilter(filterName = "AuthFilter", urlPatterns = {"*.xhtml"})
 public class AuthorizationFilter implements Filter {
 
-    public AuthorizationFilter() { }
-
     @Override
-    public void init(FilterConfig filterConfig) {}
+    public void init(FilterConfig filterConfig) {
+        //It only to initialization
+    }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response,

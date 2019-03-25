@@ -66,7 +66,7 @@
                             <div id="sidebar-menu"
                                  class="main_menu_side hidden-print main_menu">
 
-                                <div class="menu_section">
+                                 <div class="menu_section">
                                     <h3>General</h3>
                                     <ul class="nav side-menu">
                                         <li><a><i class="fa fa-home"></i> Home <span
@@ -206,50 +206,6 @@
             <script type="text/javascript" src="#{request.contextPath}/resources/js/custom.js"></script> <!-- Menu -->
             <script type="text/javascript" src="#{request.contextPath}/resources/js/chartjs/Chart.min_1.js"></script> <!-- Menu -->
 
-
-            <h:outputScript>
-
-                function chartExtender() {        
-                // this = chart widget instance        
-                // this.cfg = options      
-                this.cfg.seriesDefaults.rendererOptions.varyBarColor = true;
-                }
-
-
-                // Radar chart
-                var ctx = document.getElementById("canvasRadar");
-                var data = {
-                labels: ["RROnto", "INRonto", "ANNOnto", "CROnto", "NOMOnto", "RFCOnto", "CBBOnto", "LCOMonto","RCOnto"],
-                datasets: [{
-                label: "#{dashBoardBean.areaPolygonAutomaticOntology}",
-                backgroundColor: "rgba(3, 88, 106, 0.2)",
-                borderColor: "rgba(3, 88, 106, 0.80)",
-                pointBorderColor: "rgba(3, 88, 106, 0.80)",
-                pointBackgroundColor: "rgba(3, 88, 106, 0.80)",
-                pointHoverBackgroundColor: "#fff",
-                pointHoverBorderColor: "rgba(220,220,220,1)",
-                data: #{dashBoardBean.resultMetricsAutomaticOntology}
-
-
-                },{
-                label: "#{dashBoardBean.areaPolygonManualOntology}",
-                backgroundColor: "rgba(38, 185, 154, 0.2)",
-                borderColor: "rgba(38, 185, 154, 0.85)",
-                pointColor: "rgba(38, 185, 154, 0.85)",
-                pointStrokeColor: "#fff",
-                pointHighlightFill: "#fff",
-                pointHighlightStroke: "rgba(151,187,205,1)",
-                data: #{dashBoardBean.resultMetricsManualOnto}
-                }]
-                };
-
-                var canvasRadar = new Chart(ctx, {
-                type: 'radar',
-                data: data,
-                });
-
-
-            </h:outputScript>
         </h:body>
     </f:view>
 

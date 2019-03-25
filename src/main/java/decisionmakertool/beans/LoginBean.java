@@ -8,7 +8,6 @@ package decisionmakertool.beans;
 import decisionmakertool.util.SessionUtils;
 import decisionmakertool.dao.LoginDAO;
 import decisionmakertool.util.UtilClass;
-
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.Serializable;
@@ -31,6 +30,54 @@ public class LoginBean implements Serializable {
     private String msg;
     private String user;
     private Boolean render = Boolean.FALSE;
+
+    public void validateUsernamePassword() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        String pathURLApplication = context.getExternalContext().getRequestContextPath();
+
+        try {
+            String pwdEncrypted =encryptValue(pwd);
+            boolean valid = LoginDAO.validate(user, pwdEncrypted);
+            if (valid) {
+                HttpSession session = SessionUtils.getSession();
+                session.setAttribute("username", user);
+                context.getExternalContext().redirect(pathURLApplication + "/index.xhtml");
+            } else {
+                render = Boolean.TRUE;
+                msg = "Incorrect Username and Password";
+                FacesContext.getCurrentInstance().addMessage(
+                        null,
+                        new FacesMessage(FacesMessage.SEVERITY_WARN,
+                                "Incorrect Username and Password",
+                                "Please enter correct username and Password"));
+               context.getExternalContext().redirect(pathURLApplication+ "/login.xhtml");
+            }
+
+        } catch (IOException ex) {
+            Logger.getLogger(LoginBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private String encryptValue(String value) {
+        String result = "";
+
+        try (FileInputStream inputFile= new FileInputStream(PATH_FILE_PROPERTIES)) {
+            Properties property=new Properties();
+            property.load(inputFile);
+            String key = property.getProperty("key");
+            String initializationVector = property.getProperty("iv");
+            result = UtilClass.encrypt(key, initializationVector, value);
+        } catch (Exception e) {
+            Logger.getLogger(LoginBean.class.getName()).log(Level.SEVERE, null, e);
+        }
+        return result;
+    }
+
+    public String logout() {
+        HttpSession session = SessionUtils.getSession();
+        session.invalidate();
+        return "login.xhtml";
+    }
 
     public String getPwd() {
         return pwd;
@@ -62,45 +109,5 @@ public class LoginBean implements Serializable {
 
     public void setRender(Boolean render) {
         this.render = render;
-    }
-
-    public void validateUsernamePassword() throws Exception {
-        Properties property=new Properties();
-        FileInputStream inputFile= new FileInputStream(PATH_FILE_PROPERTIES);
-        property.load(inputFile);
-        String key = property.getProperty("key");
-        String initializationVector = property.getProperty("iv");
-        String encrypt = UtilClass.encrypt(key, initializationVector, pwd);
-
-        try {
-            boolean valid = LoginDAO.validate(user, encrypt);
-            FacesContext context = FacesContext.getCurrentInstance();
-
-            if (valid) {
-                HttpSession session = SessionUtils.getSession();
-                session.setAttribute("username", user);
-
-                context.getExternalContext().redirect("/DecisionMakerTool-1.0.0-SNAPSHOT/index.xhtml");
-            } else {
-                render = Boolean.TRUE;
-                msg = "Incorrect Username and Password";
-                FacesContext.getCurrentInstance().addMessage(
-                        null,
-                        new FacesMessage(FacesMessage.SEVERITY_WARN,
-                                "Incorrect Username and Password",
-                                "Please enter correct username and Password"));
-               context.getExternalContext().redirect("/DecisionMakerTool/login.xhtml");
-            }
-
-        } catch (IOException ex) {
-            Logger.getLogger(LoginBean.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    //logout event, invalidate session
-    public String logout() {
-        HttpSession session = SessionUtils.getSession();
-        session.invalidate();
-        return "login.xhtml";
     }
 }

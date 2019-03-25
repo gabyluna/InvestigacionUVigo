@@ -18,7 +18,7 @@ public class SemanticErrors extends SmellErrorTemplate {
         List<Pitfall> listResult = new ArrayList<>();
 
         try {
-            SmellErrorTemplate.loadPitfallSelector(path, listResult, arrayPitfallsSemantic);
+            listResult = SmellErrorTemplate.getPitfallsSelector(path, arrayPitfallsSemantic);
         } catch (UnexpectedErrorException | IOException ex) {
             Logger.getLogger(SemanticErrors.class.getName()).log(Level.SEVERE, null, ex);
         }
