@@ -31,7 +31,7 @@ public class LoginBean implements Serializable {
     private String user;
     private Boolean render = Boolean.FALSE;
 
-    public void validateUsernamePassword() {
+    public void validateUsernamePassword()  {
         FacesContext context = FacesContext.getCurrentInstance();
         String pathURLApplication = context.getExternalContext().getRequestContextPath();
 
@@ -48,8 +48,7 @@ public class LoginBean implements Serializable {
                 FacesContext.getCurrentInstance().addMessage(
                         null,
                         new FacesMessage(FacesMessage.SEVERITY_WARN,
-                                "Incorrect Username and Password",
-                                "Please enter correct username and Password"));
+                                msg,"Please enter correct username and Password"));
                context.getExternalContext().redirect(pathURLApplication+ "/login.xhtml");
             }
 

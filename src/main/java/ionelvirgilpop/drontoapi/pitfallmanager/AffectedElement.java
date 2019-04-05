@@ -26,6 +26,7 @@ public class AffectedElement {
     private String uri;
     private String datatypeURI;
     private String elementSet;
+    private boolean selected;
 
     public AffectedElement(String uri, String datatypeURI) {
         setURI(uri);
@@ -52,8 +53,16 @@ public class AffectedElement {
         return elementSet;
     }
 
-    protected void setElementSet(String elementSet) {
+    public void setElementSet(String elementSet) {
         this.elementSet = elementSet;
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 
     @Override
@@ -61,4 +70,4 @@ public class AffectedElement {
         return "\"" + uri + "\"^^<" + datatypeURI + ">";
     }
 
-}
+   }

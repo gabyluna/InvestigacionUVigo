@@ -116,17 +116,16 @@ public class DashBoardBean {
          try {
              QualityMetricsStrategy qualityMetricsStrategy;
              QualityMetricFactory qualityMetricFactory = new QualityMetricFactory();
-             int numMetricsQuality = QualityMetric.values().length;
-             int cont = 0;
+             int totalMetricsQuality = QualityMetric.values().length;
+             int positionMetric = 0;
 
-             while(cont< numMetricsQuality){
-                 qualityMetricsStrategy = qualityMetricFactory.getQualityMetric((cont+1));
-                 data[cont] =  qualityMetricsStrategy.calculateQualityMetric(metricsOntology);
-                 cont++;
+             while(positionMetric < totalMetricsQuality){
+                 qualityMetricsStrategy = qualityMetricFactory.getQualityMetric((positionMetric+1));
+                 data[positionMetric] =  qualityMetricsStrategy.calculateQualityMetric(metricsOntology);
+                 positionMetric++;
              }
 
              jsonDataMetrics = UtilClass.arrayToJsonString(data);
-             System.out.println("json:" + jsonDataMetrics);
 
         } catch (JsonProcessingException ex) {
             Logger.getLogger(DashBoardBean.class.getName()).log(Level.SEVERE, null, ex);
@@ -161,7 +160,6 @@ public class DashBoardBean {
     public void setAreaPolygonAutomaticOntology(String areaPolygonAutomaticOntology) {
         this.areaPolygonAutomaticOntology = areaPolygonAutomaticOntology;
     }
-
 
     public String getLabels() {
         return labels;

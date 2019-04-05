@@ -6,22 +6,30 @@
 package decisionmakertool.owl;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.semanticweb.owl.explanation.api.Explanation;
 import org.semanticweb.owlapi.apibinding.OWLManager;
-import org.semanticweb.owlapi.model.OWLAxiom;
-import org.semanticweb.owlapi.model.OWLDataFactory;
-import org.semanticweb.owlapi.model.OWLOntology;
-import org.semanticweb.owlapi.model.OWLOntologyCreationException;
-import org.semanticweb.owlapi.model.OWLOntologyManager;
-import org.semanticweb.owlapi.reasoner.InconsistentOntologyException;
-import org.semanticweb.owlapi.reasoner.OWLReasoner;
-import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
+import org.semanticweb.owlapi.io.OWLXMLOntologyFormat;
+import org.semanticweb.owlapi.io.RDFXMLOntologyFormat;
+import org.semanticweb.owlapi.model.*;
+import org.semanticweb.owlapi.reasoner.*;
 import org.semanticweb.owl.explanation.api.ExplanationGenerator;
 import org.semanticweb.owl.explanation.impl.blackbox.checker.InconsistentOntologyExplanationGeneratorFactory;
+import org.semanticweb.owlapi.reasoner.structural.StructuralReasonerFactory;
+import org.semanticweb.owlapi.util.DefaultPrefixManager;
+import org.semanticweb.owlapi.util.OWLEntityRemover;
+import org.semanticweb.owlapi.util.OWLEntityURIConverter;
 import uk.ac.manchester.cs.jfact.JFactFactory;
+import uk.ac.manchester.cs.owl.owlapi.OWLImportsDeclarationImpl;
+
+import javax.faces.context.FacesContext;
+
+import static com.sun.deploy.trace.Trace.flush;
 
 public class OntologyUtil {
 
@@ -100,6 +108,40 @@ public class OntologyUtil {
             cont++;
         }
         return answer;
+    }
+
+    public void removeAxioms(String valueURI) throws OWLOntologyStorageException {
+        saveOntology("ontoFinalCopy.owl");
+        OWLClass owlClass = manager . getOWLDataFactory().getOWLClass(IRI.create(valueURI));
+        Set < OWLAxiom > axiomsToRemove =  new  HashSet <> ();
+        for ( OWLAxiom axiom : ontology.getAxioms ()) {
+            if (axiom.getSignature().toString().contains(valueURI)) {
+                axiomsToRemove.add(axiom);
+                System.out.println( " para eliminar de "  + ontology.getOntologyID ().getOntologyIRI () +  " : "  + axiom);
+            }
+        }
+         manager.removeAxioms (ontology, axiomsToRemove);
+         saveOntology("ontoFinal.owl");
+         //manager.saveOntology(ontology, new RDFXMLOntologyFormat());
+    }
+
+    public void saveOntology(String nameOwl) throws OWLOntologyStorageException {
+        String realpath = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/resources");
+        String pathAutomaticOntology = realpath + "/" + nameOwl;
+        File fileformated = new File(pathAutomaticOntology);
+        //Save the ontology in a different format
+        OWLOntologyFormat format = manager.getOntologyFormat(ontology);
+        RDFXMLOntologyFormat owlxmlFormat = new RDFXMLOntologyFormat();
+        if (format.isPrefixOWLOntologyFormat()) {
+            owlxmlFormat.copyPrefixesFrom(format.asPrefixOWLOntologyFormat());
+        }
+        manager.saveOntology(ontology, owlxmlFormat, IRI.create(fileformated.toURI()));
+    }
+
+
+
+    public int getCountAxioms(){
+       return ontology.getAxiomCount();
     }
 
     public OWLOntology getOntology() {

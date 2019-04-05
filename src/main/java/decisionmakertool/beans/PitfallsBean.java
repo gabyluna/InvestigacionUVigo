@@ -1,16 +1,21 @@
 package decisionmakertool.beans;
 
 import decisionmakertool.metrics.templateimpl.*;
+import decisionmakertool.owl.OntologyUtil;
 import decisionmakertool.util.PathOntology;
 import ionelvirgilpop.drontoapi.pitfallmanager.AffectedElement;
 import ionelvirgilpop.drontoapi.pitfallmanager.Pitfall;
+import org.semanticweb.owlapi.model.OWLOntologyStorageException;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 
 @ManagedBean
 @ViewScoped
@@ -20,8 +25,7 @@ public class PitfallsBean {
     private List<AffectedElement> listAffectedElements = new ArrayList<>();
     private PathOntology path = new PathOntology();
     private String pathOntology = "";
-    private AffectedElement affectedElementSelected;
-    private List<AffectedElement> listSelectedElements;
+    private boolean selectAll = false;
 
     @PostConstruct
     public void init() {
@@ -31,6 +35,7 @@ public class PitfallsBean {
         if (this.listAffectedElements == null) {
             this.listAffectedElements = new ArrayList<>();
         }
+
     }
 
     public void loadPitfalls(){
@@ -48,6 +53,9 @@ public class PitfallsBean {
         addPitfallsAtList(listPartitionErrors);
         addPitfallsAtList(listSemanticErrors);
         addPitfallsAtList(listIncompletenessErrors);
+
+        OntologyUtil ontologyUtil = new OntologyUtil(pathOntology);
+        System.out.println("axioms:" + ontologyUtil.getCountAxioms());
     }
 
     private void addPitfallsAtList(List<Pitfall>  listPitfallErrors){
@@ -65,6 +73,42 @@ public class PitfallsBean {
 
     public void loadAffectedElements(Pitfall selectedPitfall1) {
        listAffectedElements = SmellErrorTemplate.getElementsSmellErrors(pathOntology,selectedPitfall1);
+
+    }
+
+    public void selectAllElements(){
+        if(selectAll){
+            for (AffectedElement affectedElement: listAffectedElements){
+                affectedElement.setSelected(true);
+            }
+        }else {
+            for (AffectedElement affectedElement: listAffectedElements){
+                affectedElement.setSelected(false);
+            }
+        }
+    }
+
+    public void applyQuicFix() throws OWLOntologyStorageException {
+        FacesMessage message = new FacesMessage("Successful", "Quick fix"
+                + " is done.");
+        FacesContext.getCurrentInstance().addMessage(null, message);
+        OntologyUtil ontologyUtil = new OntologyUtil(pathOntology);
+
+
+        for(AffectedElement element:listAffectedElements){
+            if(element.isSelected()){
+                System.out.println("URI:" + element.getURI());
+                ontologyUtil.removeAxioms(element.getURI());
+            }
+
+        }
+
+
+        System.out.println("URI:" + ontologyUtil.getCountAxioms());
+        loadPitfalls();
+
+        selectAll = false;
+
     }
 
     public List<Pitfall> getListPitfalls() {
@@ -107,20 +151,12 @@ public class PitfallsBean {
         this.path = path;
     }
 
-
-    public AffectedElement getAffectedElementSelected() {
-        return affectedElementSelected;
+    public boolean isSelectAll() {
+        return selectAll;
     }
 
-    public void setAffectedElementSelected(AffectedElement affectedElementSelected) {
-        this.affectedElementSelected = affectedElementSelected;
+    public void setSelectAll(boolean selectAll) {
+        this.selectAll = selectAll;
     }
 
-    public List<AffectedElement> getListSelectedElements() {
-        return listSelectedElements;
-    }
-
-    public void setListSelectedElements(List<AffectedElement> listSelectedElements) {
-        this.listSelectedElements = listSelectedElements;
-    }
 }

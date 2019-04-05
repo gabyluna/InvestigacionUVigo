@@ -78,11 +78,11 @@ public class FileUploadBean {
         PathOntology pathOntologyBase = new PathOntology();
         PathOntology pathOntologyAuto = new PathOntology();
 
-        if (chooseMode.equals("A")) {
+        if (chooseMode.equals(OntologyType.AUTOMATIC.getType())) {
             answer = loadOntology.validationConsistency(pathOntologyAuto.getPathAutomaticOntology());
         }
 
-        if (chooseMode.equals("B")) {
+        if (chooseMode.equals(OntologyType.BASE.getType())) {
             answer = loadOntology.validationConsistency(pathOntologyBase.getPathManualOntology());
         }
     }
