@@ -1,14 +1,15 @@
 package decisionmakertool.metrics.templateimpl;
 
 import decisionmakertool.model.MetricOntologyModel;
-import ionelvirgilpop.drontoapi.except.UnexpectedErrorException;
-import ionelvirgilpop.drontoapi.pitfallmanager.AffectedElement;
-import ionelvirgilpop.drontoapi.pitfallmanager.IPitfallManager;
-import ionelvirgilpop.drontoapi.pitfallmanager.Pitfall;
-import ionelvirgilpop.drontoapi.pitfallmanager.PitfallManager;
-import ionelvirgilpop.drontoapi.service.IWebService;
-import ionelvirgilpop.drontoapi.service.WebService;
-import ionelvirgilpop.drontoapi.util.PitfallSelector;
+import drontoapi.except.UnexpectedErrorException;
+import drontoapi.pitfallmanager.AffectedElement;
+import drontoapi.pitfallmanager.IPitfallManager;
+import drontoapi.pitfallmanager.Pitfall;
+import drontoapi.pitfallmanager.PitfallManager;
+import drontoapi.service.IWebService;
+import drontoapi.service.WebService;
+import drontoapi.util.PitfallSelector;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.logging.Logger;
 
 public abstract class SmellErrorTemplate {
 
-    private static IWebService webService = new WebService();
+   private static IWebService webService = new WebService();
 
     public  abstract List<Pitfall> getListSmellErrors(String path);
 

@@ -3,8 +3,8 @@ package decisionmakertool.beans;
 import decisionmakertool.metrics.templateimpl.*;
 import decisionmakertool.owl.OntologyUtil;
 import decisionmakertool.util.PathOntology;
-import ionelvirgilpop.drontoapi.pitfallmanager.AffectedElement;
-import ionelvirgilpop.drontoapi.pitfallmanager.Pitfall;
+import drontoapi.pitfallmanager.AffectedElement;
+import drontoapi.pitfallmanager.Pitfall;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 
 import java.util.ArrayList;
@@ -96,7 +96,7 @@ public class PitfallsBean {
 
 
         for(AffectedElement element:listAffectedElements){
-            if(element.isSelected()){
+            if(element.getSelected()){
                 System.out.println("URI:" + element.getURI());
                 ontologyUtil.removeAxioms(element.getURI());
             }

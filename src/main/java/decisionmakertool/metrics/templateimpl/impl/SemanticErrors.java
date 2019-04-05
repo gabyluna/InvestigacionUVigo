@@ -1,8 +1,8 @@
 package decisionmakertool.metrics.templateimpl.impl;
 
 import decisionmakertool.metrics.templateimpl.SmellErrorTemplate;
-import ionelvirgilpop.drontoapi.except.UnexpectedErrorException;
-import ionelvirgilpop.drontoapi.pitfallmanager.Pitfall;
+import drontoapi.except.UnexpectedErrorException;
+import drontoapi.pitfallmanager.Pitfall;
 
 import java.io.IOException;
 import java.util.ArrayList;
