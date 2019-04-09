@@ -6,7 +6,7 @@ import decisionmakertool.util.PathOntology;
 import drontoapi.pitfallmanager.AffectedElement;
 import drontoapi.pitfallmanager.Pitfall;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
-
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -14,12 +14,14 @@ import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 
 @ManagedBean
-@ViewScoped
-public class PitfallsBean {
+@SessionScoped
+public class PitfallsBean implements Serializable {
+
+    private static final long serialVersionUID = 1094801825228386363L;
     private List<Pitfall> listPitfalls = new ArrayList<>();
     private Pitfall selectedPitfall = new Pitfall(0);
     private List<AffectedElement> listAffectedElements = new ArrayList<>();
@@ -35,7 +37,6 @@ public class PitfallsBean {
         if (this.listAffectedElements == null) {
             this.listAffectedElements = new ArrayList<>();
         }
-
     }
 
     public void loadPitfalls(){
@@ -53,10 +54,7 @@ public class PitfallsBean {
         addPitfallsAtList(listPartitionErrors);
         addPitfallsAtList(listSemanticErrors);
         addPitfallsAtList(listIncompletenessErrors);
-
-        OntologyUtil ontologyUtil = new OntologyUtil(pathOntology);
-        System.out.println("axioms:" + ontologyUtil.getCountAxioms());
-    }
+ }
 
     private void addPitfallsAtList(List<Pitfall>  listPitfallErrors){
         if (!listPitfallErrors.isEmpty()) {
@@ -73,7 +71,6 @@ public class PitfallsBean {
 
     public void loadAffectedElements(Pitfall selectedPitfall1) {
        listAffectedElements = SmellErrorTemplate.getElementsSmellErrors(pathOntology,selectedPitfall1);
-
     }
 
     public void selectAllElements(){
@@ -88,27 +85,19 @@ public class PitfallsBean {
         }
     }
 
-    public void applyQuicFix() throws OWLOntologyStorageException {
-        FacesMessage message = new FacesMessage("Successful", "Quick fix"
-                + " is done.");
-        FacesContext.getCurrentInstance().addMessage(null, message);
+    public void applyQuickFix() throws OWLOntologyStorageException {
         OntologyUtil ontologyUtil = new OntologyUtil(pathOntology);
-
 
         for(AffectedElement element:listAffectedElements){
             if(element.getSelected()){
-                System.out.println("URI:" + element.getURI());
                 ontologyUtil.removeAxioms(element.getURI());
             }
-
         }
-
-
-        System.out.println("URI:" + ontologyUtil.getCountAxioms());
+        FacesMessage message = new FacesMessage("Successful", "Quick fix"
+                + " is done.");
+        FacesContext.getCurrentInstance().addMessage(null, message);
         loadPitfalls();
-
         selectAll = false;
-
     }
 
     public List<Pitfall> getListPitfalls() {

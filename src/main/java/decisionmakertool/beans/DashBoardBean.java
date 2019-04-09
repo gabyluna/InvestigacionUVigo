@@ -1,6 +1,7 @@
 package decisionmakertool.beans;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+
 import decisionmakertool.metrics.qualitymetrics.QualityMetric;
 import decisionmakertool.metrics.qualitymetrics.QualityMetricFactory;
 import decisionmakertool.metrics.strategy.*;
@@ -10,19 +11,21 @@ import decisionmakertool.metrics.qualitymetrics.QualityMetricsStrategy;
 import decisionmakertool.model.MetricOntologyModel;
 import decisionmakertool.util.PathOntology;
 import decisionmakertool.util.UtilClass;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.bean.SessionScoped;
 import org.semanticweb.owlapi.model.OWLOntology;
 
 @ManagedBean
-@ViewScoped
-public class DashBoardBean {
+@SessionScoped
+public class DashBoardBean implements Serializable {
 
+    private static final long serialVersionUID = 1094801825228386363L;
     private List<MetricOntologyModel> listDataOntology;
     private OWLOntology manualOntology;
     private  OWLOntology automaticOntology;
@@ -34,10 +37,13 @@ public class DashBoardBean {
 
     @PostConstruct
     public void init() {
+    }
+
+    public void loadData(){
         if (this.listDataOntology == null) {
             this.listDataOntology = new ArrayList<>();
         }
-
+        System.out.println("aqui:");
         loadOntologies();
         loadBaseMetrics();
         loadLabelsGraphic();
@@ -65,6 +71,8 @@ public class DashBoardBean {
                     arrayLabels[i] = qualityMetric.name();
                     i++;
             }
+
+            System.out.println("labels:" + labels);
             labels = UtilClass.arrayToJsonString(arrayLabels);
         } catch (JsonProcessingException e) {
             Logger.getLogger(DashBoardBean.class.getName()).log(Level.SEVERE, null, e);

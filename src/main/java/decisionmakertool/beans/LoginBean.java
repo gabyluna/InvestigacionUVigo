@@ -8,6 +8,8 @@ package decisionmakertool.beans;
 import decisionmakertool.util.SessionUtils;
 import decisionmakertool.dao.LoginDAO;
 import decisionmakertool.util.UtilClass;
+import org.springframework.web.context.annotation.SessionScope;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.Serializable;
@@ -16,12 +18,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 
 @ManagedBean
-@SessionScoped
+@SessionScope
 public class LoginBean implements Serializable {
     private static final long serialVersionUID = 1094801825228386363L;
     private static final String PATH_FILE_PROPERTIES = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/resources")

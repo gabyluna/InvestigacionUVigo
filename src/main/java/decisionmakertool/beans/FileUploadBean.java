@@ -15,9 +15,13 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import org.primefaces.model.UploadedFile;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+import org.springframework.web.context.annotation.SessionScope;
 
-@ManagedBean
-@ViewScoped
+
+@Component
+@Scope("singleton")
 public class FileUploadBean {
 
     private UploadedFile file;

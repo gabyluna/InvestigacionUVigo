@@ -204,7 +204,7 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
-            <version>5.1.5.RELEASE</version>
+            <version>5.1.6.RELEASE</version>
             <type>jar</type>
         </dependency>
         <dependency>
@@ -213,11 +213,23 @@
             <version>1.2.17</version>
             <type>jar</type>
         </dependency>
+
+        <dependency>
+            <groupId>commons-dbcp</groupId>
+            <artifactId>commons-dbcp</artifactId>
+            <version>1.1-RC2</version>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
-            <version>5.1.5.RELEASE</version>
+            <version>5.1.6.RELEASE</version>
             <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>5.1.6.RELEASE</version>
         </dependency>
 
         <dependency>
@@ -273,7 +285,6 @@
         </plugins>
     </build>
 
-
     <repositories>
         <!-- Repositorio do Primefaces -->
         <repository>
@@ -283,5 +294,6 @@
             <layout>default</layout>
         </repository>
     </repositories>
+
     <name>DecisionMakerTool</name>
 </project>

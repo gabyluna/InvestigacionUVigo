@@ -3,8 +3,8 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:p="http://primefaces.org/ui"
-                template="template.xhtml"   >
+                xmlns:p="http://primefaces.org/ui" xmlns:f="http://xmlns.jcp.org/jsf/core"
+                template="template.xhtml">
 
 
 
@@ -21,6 +21,9 @@
 
             <p:growl id="messages" showDetail="true" />
 
+            <f:metadata>
+                <f:event type="preRenderView" listener="#{dashBoardBean.loadData}" />
+            </f:metadata>
 
             <!-- top tiles -->
 
