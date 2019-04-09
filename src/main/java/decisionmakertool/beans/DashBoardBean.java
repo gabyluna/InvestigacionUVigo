@@ -43,7 +43,6 @@ public class DashBoardBean implements Serializable {
         if (this.listDataOntology == null) {
             this.listDataOntology = new ArrayList<>();
         }
-        System.out.println("aqui:");
         loadOntologies();
         loadBaseMetrics();
         loadLabelsGraphic();
@@ -72,7 +71,6 @@ public class DashBoardBean implements Serializable {
                     i++;
             }
 
-            System.out.println("labels:" + labels);
             labels = UtilClass.arrayToJsonString(arrayLabels);
         } catch (JsonProcessingException e) {
             Logger.getLogger(DashBoardBean.class.getName()).log(Level.SEVERE, null, e);
