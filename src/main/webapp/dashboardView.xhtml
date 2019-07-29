@@ -3,8 +3,8 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:p="http://primefaces.org/ui"
-                template="template.xhtml"   >
+                xmlns:p="http://primefaces.org/ui" xmlns:f="http://xmlns.jcp.org/jsf/core"
+                template="template.xhtml">
 
 
 
@@ -21,10 +21,13 @@
 
             <p:growl id="messages" showDetail="true" />
 
+            <f:metadata>
+                <f:event type="preRenderView" listener="#{dashBoardBean.loadData}" />
+            </f:metadata>
 
             <!-- top tiles -->
 
-            <p:carousel numVisible="1" effect="easeInStrong" headerText="Basic Metrics" style="margin-bottom:0" value="#{dashBoardBean.listDataOntolgy}" var="shipmentRow" responsive="true">
+            <p:carousel numVisible="1" effect="easeInStrong" headerText="Basic Metrics" style="margin-bottom:0" value="#{dashBoardBean.listDataOntology}" var="shipmentRow" responsive="true">
 
                 <p:tab title="#{shipmentRow.nameOntology}" >
                     <div class="row tile_count" align="center" style="margin-left: 10px">
@@ -61,6 +64,7 @@
                             <div  class="count red">#{shipmentRow.numAnnotations}</div>
                             <span class="count_bottom"># Annotations</span>
                         </div>
+
                     </div>
 
 
@@ -74,7 +78,7 @@
                     <div class="col-md-6 col-sm-6 col-xs-12">
                         <div class="x_panel">
                             <div class="x_title">
-                                <h2>Graphic Result Ontologies <small></small></h2>
+                                <h2>Quality Metrics<small></small></h2>
                                 <ul class="nav navbar-right panel_toolbox">
                                     <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                                     </li>
@@ -102,6 +106,53 @@
 
                 </div>
             </h:panelGrid>
+
+            <script type="text/javascript" src="#{request.contextPath}/resources/js/chartjs/Chart.min_1.js"></script> <!-- Menu -->
+
+
+            <h:outputScript>
+
+                function chartExtender() {
+                // this = chart widget instance
+                // this.cfg = options
+                this.cfg.seriesDefaults.rendererOptions.varyBarColor = true;
+                }
+
+
+                // Radar chart
+                var ctx = document.getElementById("canvasRadar");
+                var data = {
+                labels: #{dashBoardBean.labels},
+                datasets: [{
+                label: "#{dashBoardBean.areaPolygonAutomaticOntology}",
+                backgroundColor: "rgba(3, 88, 106, 0.2)",
+                borderColor: "rgba(3, 88, 106, 0.80)",
+                pointBorderColor: "rgba(3, 88, 106, 0.80)",
+                pointBackgroundColor: "rgba(3, 88, 106, 0.80)",
+                pointHoverBackgroundColor: "#fff",
+                pointHoverBorderColor: "rgba(220,220,220,1)",
+                data: #{dashBoardBean.resultMetricsAutomaticOntology}
+
+
+                },{
+                label: "#{dashBoardBean.areaPolygonManualOntology}",
+                backgroundColor: "rgba(38, 185, 154, 0.2)",
+                borderColor: "rgba(38, 185, 154, 0.85)",
+                pointColor: "rgba(38, 185, 154, 0.85)",
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(151,187,205,1)",
+                data: #{dashBoardBean.resultMetricsManualOnto}
+                }]
+                };
+
+                var canvasRadar = new Chart(ctx, {
+                type: 'radar',
+                data: data,
+                });
+
+
+            </h:outputScript>
 
 
         </h:form>

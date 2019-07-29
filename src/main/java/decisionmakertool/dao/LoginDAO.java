@@ -11,30 +11,28 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-/**
- *
- * @author gaby_
- */
 public class LoginDAO {
 
-    public static boolean validate(String user, String password) {
-        Connection con = null;
-        PreparedStatement ps = null;
+    private LoginDAO(){
 
-        try {
-            con = DataConnect.getConnection();
-            ps = con.prepareStatement("Select uname, upassword from User where uname = ? and upassword = ?");
+    }
+
+    public static boolean validate(String user, String password) {
+        Connection con;
+        con = DataConnect.getConnection();
+        String sqlStatement = "Select uname, upassword from User where uname = ? and upassword = ?";
+
+        try (PreparedStatement ps = con.prepareStatement(sqlStatement)){
             ps.setString(1, user);
             ps.setString(2, password);
-
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
                 //result found, means valid inputs
                 return true;
             }
+            rs.close();
         } catch (SQLException ex) {
-            System.out.println("Login error -->" + ex.getMessage());
             return false;
         } finally {
             DataConnect.close(con);

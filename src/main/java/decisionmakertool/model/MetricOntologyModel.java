@@ -12,6 +12,22 @@ public class MetricOntologyModel {
     private int relationsThing;
     private int numClassWithIndividuals;
 
+    public MetricOntologyModel(String nameOntology, int numClasses, int numSubclassOf, int numInstances,
+                                   int numProperties, int numAnnotations, int numSuperclasses, int relationsThing,
+                                   int numClassWithIndividuals){
+
+        this.nameOntology = nameOntology;
+        this.numClasses = numClasses;
+        this.numSubclassOf = numSubclassOf;
+        this.numInstances = numInstances;
+        this.numProperties = numProperties;
+        this.numAnnotations = numAnnotations;
+        this.numSuperclasses = numSuperclasses;
+        this.relationsThing = relationsThing;
+        this.numClassWithIndividuals = numClassWithIndividuals;
+
+    }
+
     public int getNumClasses() {
         return numClasses;
     }

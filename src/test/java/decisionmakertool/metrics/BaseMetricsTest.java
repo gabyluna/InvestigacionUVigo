@@ -1,6 +1,7 @@
 package decisionmakertool.metrics;
 
-import decisionmakertool.owl.LoadOntologyClass;
+import decisionmakertool.metrics.strategy.*;
+import decisionmakertool.owl.OntologyUtil;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -8,53 +9,62 @@ import org.semanticweb.owlapi.model.OWLOntology;
 
 public class BaseMetricsTest {
     private OWLOntology ontologyActual;
-    private BaseMetrics baseMetrics;
+    private BaseMetricsStrategy baseMetricsStrategy;
+    private BaseMetricsFactory baseMetricsFactory;
 
     @Before
     public void initialize() {
-        LoadOntologyClass loadOntology = new LoadOntologyClass();
-        loadOntology.loadOntology("C:/Users/Gaby/Desktop/Vbox/OntoFinales/ontoFinal.owl");
+        OntologyUtil loadOntology = new OntologyUtil("C:/Users/Gaby/Desktop/Vbox/OntoFinales/ontoFinal.owl");
         ontologyActual = loadOntology.getOntology();
-        baseMetrics = new BaseMetrics();
+        baseMetricsFactory = new BaseMetricsFactory();
     }
 
     @Test
     public void getNumSuperClasses(){
-        Assert.assertEquals(50,baseMetrics.getNumSuperClasses(ontologyActual));
+        baseMetricsStrategy = baseMetricsFactory.getBaseMetric(BaseMetric.SUPERCLASSES);
+        Assert.assertEquals(1141,baseMetricsStrategy.calculateMetric(ontologyActual));
     }
 
     @Test
     public void getNumClasses() {
-        Assert.assertEquals(923,baseMetrics.getNumClasses(ontologyActual));
+        baseMetricsStrategy = baseMetricsFactory.getBaseMetric(BaseMetric.CLASSES);
+        Assert.assertEquals(923,baseMetricsStrategy.calculateMetric(ontologyActual));
     }
 
     @Test
     public void getNumSubClasses() {
-        Assert.assertEquals(1124,baseMetrics.getNumSubClasses(ontologyActual));
+        baseMetricsStrategy = baseMetricsFactory.getBaseMetric(BaseMetric.SUBCLASSES);
+        Assert.assertEquals(1124,baseMetricsStrategy.calculateMetric(ontologyActual));
     }
 
     @Test
     public void getNumInstances() {
-        Assert.assertEquals(370,baseMetrics.getNumInstances(ontologyActual));
+        baseMetricsStrategy = baseMetricsFactory.getBaseMetric(BaseMetric.INSTANCES);
+        Assert.assertEquals(370,baseMetricsStrategy.calculateMetric(ontologyActual));
     }
 
     @Test
     public void getNumProperties() {
-        Assert.assertEquals(48,baseMetrics.getNumProperties(ontologyActual));
+        baseMetricsStrategy = baseMetricsFactory.getBaseMetric(BaseMetric.PROPERTIES);
+        Assert.assertEquals(48,baseMetricsStrategy.calculateMetric(ontologyActual));
     }
 
     @Test
     public void getNumAnnotation() {
-        Assert.assertEquals(4020,baseMetrics.getNumAnnotation(ontologyActual));
+        baseMetricsStrategy = baseMetricsFactory.getBaseMetric(BaseMetric.ANNOTATIONS);
+        Assert.assertEquals(4020,baseMetricsStrategy.calculateMetric(ontologyActual));
     }
 
     @Test
     public void getNumRelationsOfThing() {
-        Assert.assertEquals(922,baseMetrics.getNumRelationsOfThing(ontologyActual));
+        baseMetricsStrategy = baseMetricsFactory.getBaseMetric(BaseMetric.RELATIONS_THING);
+        Assert.assertEquals(922,baseMetricsStrategy.calculateMetric(ontologyActual));
     }
 
     @Test
     public void getNumClassesWithIndividuals() {
-        Assert.assertEquals(1,baseMetrics.getNumClassesWithIndividuals(ontologyActual));
+        baseMetricsStrategy = baseMetricsFactory.getBaseMetric(BaseMetric.CLASS_WITH_INDIVIDUALS);
+        Assert.assertEquals(1,baseMetricsStrategy.calculateMetric(ontologyActual));
     }
+
 }

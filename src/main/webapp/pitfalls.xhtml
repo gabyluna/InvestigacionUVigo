@@ -11,72 +11,97 @@
         Report Pitfalls 
     </ui:define>
 
-    <ui:define name="contenido">  
-
-
+    <ui:define name="contenido">
         <h:form id="form"  enctype="multipart/form-data">
             <!-- Menu -->
 
             <p:growl id="messages" showDetail="true" />
-            <p:ajaxStatus style="display:block;margin-bottom:1em; margin-left: 35em;height:24px;">
 
-                <f:facet name="start">
-                    <p:graphicImage library="images" name="loading.gif" style="width:60px; height: 60px"/>
-                </f:facet>
+            <h:panelGrid columns="5" cellpadding="5">
+                    <p:outputLabel for="selectOntology" value="Select a ontology: " />
+                    <p:spacer width="10px" />
+                    <p:selectOneMenu id="selectOntology" value="#{pitfallsBean.pathOntology}" style="width:150px">
+                        <f:selectItem itemLabel="--- Select one ---" itemValue="" noSelectionOption="true" />
+                        <f:selectItem itemLabel="Manual Ontology" itemValue="#{pitfallsBean.path.pathManualOntology}" noSelectionOption="true" />
+                        <f:selectItem itemLabel="Automatic Ontology" itemValue="#{pitfallsBean.path.pathAutomaticOntology}" noSelectionOption="true" />
+                    </p:selectOneMenu>
+                    <p:spacer width="20px" />
+                    <p:commandButton styleClass="btn btn-round btn-primary" value="Search" ajax="false"
+                                     action="#{pitfallsBean.loadPitfalls}"
+                                     onclick="PF('statusDialog').show()" oncomplete="PF('statusDialog').hide()"/>
 
-            </p:ajaxStatus>
-            <p:dataTable id="basicDT" var="pitfall" value="#{pitfallsBean.listPitfalls}" >
-                <p:ajax event="rowToggle" listener="#{pitfallsBean.loadAffectedElements1(pitfall)}" update="tableAffectedElements"  />
+            </h:panelGrid>
+
+            <p:separator />
+
+            <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+
+            <p:dataTable id="affectedElements" var="pitfall" value="#{pitfallsBean.listPitfalls}">
 
                 <p:column headerText="Dimension" style="width: 100px">
-                    <h:outputText value="#{(pitfall.code eq 'P06' ? 'Circularity' : 
+                    <h:outputText value="#{(pitfall.code eq 'P06' ? 'Circularity' :
                                            (pitfall.code eq 'P10' ? 'Partition' :
                                            (pitfall.code eq 'P04' eq 'P08' eq 'P11' eq 'P13' ? 'Incompleteness' :'Semantic')))}" />
                 </p:column>
                 <p:column headerText="Description" style="width: 250px">
                     <h:outputText value="#{pitfall.name}" />
                 </p:column>
-                <p:column sortBy="#{pitfall.importanceLevel}" headerText="Importance" 
-                          style="width: 100px;  background:#{pitfall.importanceLevel eq 'Minor' ? '#F3F781' 
+                <p:column sortBy="#{pitfall.importanceLevel}" headerText="Importance"
+                          style="width: 100px;  background:#{pitfall.importanceLevel eq 'Minor' ? '#F3F781'
                                                              : pitfall.importanceLevel eq 'Important' ? '#F7BE81'
                                                              : pitfall.importanceLevel eq 'Critical' ? '#F78181':null} " >
                     <h:outputText value="#{pitfall.importanceLevel}"  />
                 </p:column>
 
-
-
-                <p:column style="width:16px">
-
-                    <p:rowToggler />
-
+                <p:column style="width:32px;text-align: center">
+                    <p:commandButton update=":form:elementsDetail" action="#{pitfallsBean.loadAffectedElements(pitfall)}"
+                                     oncomplete="PF('elementsDialog').show()" icon="pi pi-search" title="View">
+                        <f:setPropertyActionListener value="#{pitfall}" target="#{pitfallsBean.selectedPitfall}" />
+                    </p:commandButton>
                 </p:column>
-
-                <p:rowExpansion>
-                    <p:panelGrid  columns="1" rendered="#{not empty pitfallsBean.selectedPitfall}" >
-
-                        <p:dataTable id="tableAffectedElements" var="element" value="#{pitfallsBean.listAffectedElements}" scrollable="true" scrollHeight="150"
-                                     style="width: available">
-                            <p:column  headerText="Pitfalls found" footerText="total: #{pitfallsBean.listAffectedElements.size()}" style="width: 100px" >
-                                <h:outputText value="#{element.URI}" />
-                            </p:column>
-
-                        </p:dataTable>
-
-                    </p:panelGrid>
-                </p:rowExpansion>
             </p:dataTable>
 
             <!-- /top tiles -->
             <p:separator />
 
 
-            <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
-                <p:graphicImage library="images" name="loading.gif" style="width: 50px; height: 50px"/>
+            <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="true">
+                <p:graphicImage library="images" name="estatus.gif" style="width: 100px; height: 50px"/>
             </p:dialog>
 
-            <p:dialog header="Affected Elements" widgetVar="panelDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
-                <p:outputPanel id="panelDetail" style="text-align:center;">
 
+            <p:dialog header="Quick Fix" widgetVar="elementsDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                <p:outputPanel id="elementsDetail" style="text-align:center;">
+                    <p:panelGrid  columns="1" rendered="#{not empty pitfallsBean.selectedPitfall}" >
+
+                        <p:dataTable id="tableAffectedElements1" var="element" value="#{pitfallsBean.listAffectedElements}"
+                                     scrollable="true" scrollHeight="150" style="margin-bottom:0">
+
+                            <f:facet name="header">
+                                Elements Affected #{(pitfallsBean.selectedPitfall.code eq 'P06' ? 'Circularity' :
+                                    (pitfallsBean.selectedPitfall.code eq 'P10' ? 'Partition' :
+                                            (pitfallsBean.selectedPitfall.code eq 'P04' eq 'P08' eq 'P11' eq 'P13' ? 'Incompleteness' :'Semantic')))}
+                            </f:facet>
+                            <p:column style="width: 60px" >
+                                <f:facet name="header">
+                                    <p:selectBooleanCheckbox value="#{pitfallsBean.selectAll}" >
+                                        <p:ajax listener="#{pitfallsBean.selectAllElements}" update=":form:elementsDetail" />
+                                    </p:selectBooleanCheckbox>
+                                </f:facet>
+                                <p:selectBooleanCheckbox value="#{element.selected}" />
+                            </p:column>
+                            <p:column sortBy="#{element.URI}"  headerText="Elements" footerText="total: #{pitfallsBean.listAffectedElements.size()}" >
+                                <h:outputText value="#{element.URI}" />
+                            </p:column>
+
+                        </p:dataTable>
+                        <p:spacer height="10px" />
+
+                        <p:commandButton value="Quick Fix" action="#{pitfallsBean.applyQuickFix}" ajax="false"
+                                         update=":form:affectedElements"
+                                         onclick="PF('statusDialog').show()" oncomplete="PF('statusDialog').hide()"/>
+
+                    </p:panelGrid>
                 </p:outputPanel>
             </p:dialog>
 

@@ -7,31 +7,77 @@ package decisionmakertool.beans;
 
 import decisionmakertool.util.SessionUtils;
 import decisionmakertool.dao.LoginDAO;
-import decisionmakertool.util.ValidatorUtil;
+import decisionmakertool.util.UtilClass;
+import org.springframework.web.context.annotation.SessionScope;
+
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 
-/**
- *
- * @author gaby_
- */
 @ManagedBean
-@SessionScoped
+@SessionScope
 public class LoginBean implements Serializable {
-
     private static final long serialVersionUID = 1094801825228386363L;
-
+    private static final String PATH_FILE_PROPERTIES = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/resources")
+            + "/loginKeys.properties";
     private String pwd;
     private String msg;
     private String user;
     private Boolean render = Boolean.FALSE;
+
+    public void validateUsernamePassword()  {
+        FacesContext context = FacesContext.getCurrentInstance();
+        String pathURLApplication = context.getExternalContext().getRequestContextPath();
+
+        try {
+            String pwdEncrypted =encryptValue(pwd);
+            boolean valid = LoginDAO.validate(user, pwdEncrypted);
+            if (valid) {
+                HttpSession session = SessionUtils.getSession();
+                session.setAttribute("username", user);
+                context.getExternalContext().redirect(pathURLApplication + "/index.xhtml");
+            } else {
+                render = Boolean.TRUE;
+                msg = "Incorrect Username and Password";
+                FacesContext.getCurrentInstance().addMessage(
+                        null,
+                        new FacesMessage(FacesMessage.SEVERITY_WARN,
+                                msg,"Please enter correct username and Password"));
+               context.getExternalContext().redirect(pathURLApplication+ "/login.xhtml");
+            }
+
+        } catch (IOException ex) {
+            Logger.getLogger(LoginBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private String encryptValue(String value) {
+        String result = "";
+
+        try (FileInputStream inputFile= new FileInputStream(PATH_FILE_PROPERTIES)) {
+            Properties property=new Properties();
+            property.load(inputFile);
+            String key = property.getProperty("key");
+            String initializationVector = property.getProperty("iv");
+            result = UtilClass.encrypt(key, initializationVector, value);
+        } catch (Exception e) {
+            Logger.getLogger(LoginBean.class.getName()).log(Level.SEVERE, null, e);
+        }
+        return result;
+    }
+
+    public String logout() {
+        HttpSession session = SessionUtils.getSession();
+        session.invalidate();
+        return "login.xhtml";
+    }
 
     public String getPwd() {
         return pwd;
@@ -63,53 +109,5 @@ public class LoginBean implements Serializable {
 
     public void setRender(Boolean render) {
         this.render = render;
-    }
-
-    //validate login
-    public void validateUsernamePassword() throws IOException, Exception {
-
-        String key = "92AE31A79FEEB2A3"; //llave
-        String iv = "0123456789ABCDEF";
-        String encriptar = "";
-
-        encriptar = ValidatorUtil.encrypt(key, iv, pwd);
-
-        try {
-            boolean valid = LoginDAO.validate(user, encriptar);
-
-            if (valid) {
-
-                HttpSession session = SessionUtils.getSession();
-                session.setAttribute("username", user);
-                FacesContext contex = FacesContext.getCurrentInstance();
-                contex.getExternalContext().redirect("/DecisionMakerTool-1.0.0-SNAPSHOT/index.xhtml");
-                System.out.println("aqui");
-                //contex.getExternalContext().redirect("/DecisionMakerTool/index.xhtml");
-            } else {
-
-                render = Boolean.TRUE;
-                msg = "Incorrect Username and Password";
-
-                FacesContext.getCurrentInstance().addMessage(
-                        null,
-                        new FacesMessage(FacesMessage.SEVERITY_WARN,
-                                "Incorrect Username and Password",
-                                "Please enter correct username and Password"));
-
-                FacesContext contex = FacesContext.getCurrentInstance();
-                //contex.getExternalContext().redirect("/DecisionMakerTool-1.0.0-SNAPSHOT/login.xhtml");
-                contex.getExternalContext().redirect("/DecisionMakerTool/login.xhtml");
-            }
-
-        } catch (IOException ex) {
-            Logger.getLogger(LoginBean.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    //logout event, invalidate session
-    public String logout() {
-        HttpSession session = SessionUtils.getSession();
-        session.invalidate();
-        return "login.xhtml";
     }
 }
