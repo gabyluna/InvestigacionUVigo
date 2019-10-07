@@ -19,10 +19,13 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
+
+import org.apache.jena.base.Sys;
 import org.semanticweb.owlapi.model.OWLOntology;
 
 @ManagedBean
-@SessionScoped
+@ViewScoped
 public class DashBoardBean implements Serializable {
 
     private static final long serialVersionUID = 1094801825228386363L;
@@ -52,6 +55,8 @@ public class DashBoardBean implements Serializable {
     private  void loadOntologies(){
         PathOntology path = new PathOntology();
         OntologyUtil loadManualOntology = new OntologyUtil(path.getPathManualOntology());
+        System.out.println("pathB:"+ path.getPathManualOntology());
+        System.out.println("pathA:"+ path.getPathAutomaticOntology());
         manualOntology = loadManualOntology.getOntology();
         OntologyUtil loadAutomaticOntology  = new OntologyUtil(path.getPathAutomaticOntology());
         automaticOntology = loadAutomaticOntology.getOntology();

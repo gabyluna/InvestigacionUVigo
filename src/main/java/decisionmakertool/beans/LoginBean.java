@@ -9,7 +9,6 @@ import decisionmakertool.util.SessionUtils;
 import decisionmakertool.dao.LoginDAO;
 import decisionmakertool.util.UtilClass;
 import org.springframework.web.context.annotation.SessionScope;
-
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.Serializable;
@@ -33,12 +32,14 @@ public class LoginBean implements Serializable {
     private Boolean render = Boolean.FALSE;
 
     public void validateUsernamePassword()  {
+        LoginDAO loginDAO = new LoginDAO();
         FacesContext context = FacesContext.getCurrentInstance();
         String pathURLApplication = context.getExternalContext().getRequestContextPath();
 
         try {
             String pwdEncrypted =encryptValue(pwd);
-            boolean valid = LoginDAO.validate(user, pwdEncrypted);
+            boolean valid = loginDAO.validate(user, pwdEncrypted);
+
             if (valid) {
                 HttpSession session = SessionUtils.getSession();
                 session.setAttribute("username", user);

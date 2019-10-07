@@ -56,8 +56,13 @@ public class ComputeQualityMetrics {
         return total;
     }
 
-    public static int getTotalValue(float rfconto, Range range1, Range range2, Range range3, Range range4) {
+    public static int getTotalValue(float rfconto) {
         int totalRfconto = 0;
+        Range range1 = new Range(8,12);
+        Range range2 = new Range(6,8);
+        Range range3 = new Range(3,6);
+        Range range4 = new Range(0,3);
+
         if (rfconto > 12){
             totalRfconto = ComputeQualityMetrics.FIRST_RANGE;
         }else if(range1.includes(rfconto)) {

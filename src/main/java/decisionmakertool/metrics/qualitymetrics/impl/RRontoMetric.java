@@ -9,7 +9,7 @@ public class RRontoMetric implements QualityMetricsStrategy {
     @Override
     public int calculateQualityMetric(MetricOntologyModel metricOntologyModel) {
         int properties = metricOntologyModel.getNumProperties();
-        float rronto = (float) properties / (metricOntologyModel.getNumSubclassOf() + properties);
+        float rronto = (float) metricOntologyModel.getNumSubclassOf() / (metricOntologyModel.getNumSubclassOf() + properties);
         return ComputeQualityMetrics.calculateMetric(rronto);
     }
 }

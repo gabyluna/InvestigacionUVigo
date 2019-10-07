@@ -71,9 +71,24 @@
 
 
             <p:dialog header="Quick Fix" widgetVar="elementsDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                <p:ajax event="close" update=":form:affectedElements" />
+                <p:panelGrid columns="5">
+                    <p:outputLabel for="selectQuickFix" value="Select a quick fix: " />
+                    <p:spacer width="10px" />
+                    <p:selectOneMenu id="selectQuickFix" value="#{pitfallsBean.quickFixSelected}" style="width:150px">
+                        <f:selectItem itemLabel="--- Select one ---" itemValue="" noSelectionOption="true" />
+                        <f:selectItem itemLabel="Remove Axioms" itemValue="1" noSelectionOption="true" />
+                        <f:selectItem itemLabel="Remove Synonims" itemValue="2" noSelectionOption="true" />
+                    </p:selectOneMenu>
+                    <p:spacer width="20px" />
+                    <p:commandButton styleClass="btn btn-round btn-primary" value="Search" ajax="true"
+                                     action="#{pitfallsBean.applyQuickFix}" update="tableAffectedElements1,areaOntology"
+                                     onclick="PF('statusDialog').show()" oncomplete="PF('statusDialog').hide()"/>
+
+                </p:panelGrid>
+
                 <p:outputPanel id="elementsDetail" style="text-align:center;">
                     <p:panelGrid  columns="1" rendered="#{not empty pitfallsBean.selectedPitfall}" >
-
                         <p:dataTable id="tableAffectedElements1" var="element" value="#{pitfallsBean.listAffectedElements}"
                                      scrollable="true" scrollHeight="150" style="margin-bottom:0">
 
@@ -95,12 +110,24 @@
                             </p:column>
 
                         </p:dataTable>
+
                         <p:spacer height="10px" />
 
-                        <p:commandButton value="Quick Fix" action="#{pitfallsBean.applyQuickFix}" ajax="false"
-                                         update=":form:affectedElements"
-                                         onclick="PF('statusDialog').show()" oncomplete="PF('statusDialog').hide()"/>
+                        <p:commandButton value="Apply Quick Fix" action="#{pitfallsBean.destroyWorld}" update="messages">
+                            <p:confirm header="Confirmation" message="Are you sure?" icon="pi pi-exclamation-triangle" />
+                        </p:commandButton>
 
+                        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                            <p:commandButton value="Yes"  styleClass="ui-confirmdialog-yes"
+                                             action="#{pitfallsBean.saveQuickFix}"
+                                             update=":form:elementsDetail"/>
+                            <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no"  />
+                        </p:confirmDialog>
+
+                    </p:panelGrid>
+                    <p:panelGrid id="areaOntology" columns="1">
+                        <p:outputLabel value="Calculated area: #{pitfallsBean.area}" />
+                        <p:outputLabel value="Actual area: #{dashBoardBean.areaPolygonAutomaticOntology}" />
                     </p:panelGrid>
                 </p:outputPanel>
             </p:dialog>
