@@ -1,16 +1,8 @@
 package decisionmakertool.beans;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-
-import decisionmakertool.metrics.qualitymetrics.QualityMetric;
-import decisionmakertool.metrics.qualitymetrics.QualityMetricFactory;
-import decisionmakertool.metrics.strategy.*;
-import decisionmakertool.model.MetricOntologyBuilder;
 import decisionmakertool.owl.OntologyUtil;
-import decisionmakertool.metrics.qualitymetrics.QualityMetricsStrategy;
-import decisionmakertool.model.MetricOntologyModel;
 import decisionmakertool.util.PathOntology;
-import decisionmakertool.util.UtilClass;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,11 +10,19 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 
-import org.apache.jena.base.Sys;
+import decisionmakertool.util.Util;
+import metrics.basemetrics.BaseMetricEnum;
+import metrics.basemetrics.BaseMetricsFactory;
+import metrics.basemetrics.BaseMetricsStrategy;
+import metrics.qualitymetrics.QualityMetricEnum;
+import metrics.qualitymetrics.QualityMetricFactory;
+import metrics.qualitymetrics.QualityMetricsStrategy;
+import model.MetricOntologyBuilder;
+import model.MetricOntologyModel;
 import org.semanticweb.owlapi.model.OWLOntology;
+import util.UtilClass;
 
 @ManagedBean
 @ViewScoped
@@ -55,8 +55,6 @@ public class DashBoardBean implements Serializable {
     private  void loadOntologies(){
         PathOntology path = new PathOntology();
         OntologyUtil loadManualOntology = new OntologyUtil(path.getPathManualOntology());
-        System.out.println("pathB:"+ path.getPathManualOntology());
-        System.out.println("pathA:"+ path.getPathAutomaticOntology());
         manualOntology = loadManualOntology.getOntology();
         OntologyUtil loadAutomaticOntology  = new OntologyUtil(path.getPathAutomaticOntology());
         automaticOntology = loadAutomaticOntology.getOntology();
@@ -67,24 +65,24 @@ public class DashBoardBean implements Serializable {
         loadBaseMetricsOntology(automaticOntology,  "Automatic Ontology");
     }
     private void loadLabelsGraphic() {
-        String[] arrayLabels = new String[QualityMetric.values().length];
+        String[] arrayLabels = new String[QualityMetricEnum.values().length];
 
         try {
             int i = 0;
-            for(QualityMetric qualityMetric: QualityMetric.values()){
+            for(QualityMetricEnum qualityMetric: QualityMetricEnum.values()){
                     arrayLabels[i] = qualityMetric.name();
                     i++;
             }
 
-            labels = UtilClass.arrayToJsonString(arrayLabels);
+            labels = Util.arrayToJsonString(arrayLabels);
         } catch (JsonProcessingException e) {
             Logger.getLogger(DashBoardBean.class.getName()).log(Level.SEVERE, null, e);
         }
     }
 
     private void loadGraphicMetrics(){
-        Integer[] dataManualOntology = new Integer[QualityMetric.values().length];
-        Integer[] dataAutomaticOntology = new Integer[QualityMetric.values().length];
+        Integer[] dataManualOntology = new Integer[QualityMetricEnum.values().length];
+        Integer[] dataAutomaticOntology = new Integer[QualityMetricEnum.values().length];
         resultMetricsManualOntology = loadQualityMetrics(listDataOntology.get(0), dataManualOntology);
         resultMetricsAutomaticOntology = loadQualityMetrics(listDataOntology.get(1), dataAutomaticOntology);
 
@@ -96,21 +94,21 @@ public class DashBoardBean implements Serializable {
 
     private void loadBaseMetricsOntology(OWLOntology ontology, String name) {
         BaseMetricsStrategy baseMetricsStrategy;
-        baseMetricsStrategy = BaseMetricsFactory.getBaseMetric(BaseMetric.ANNOTATIONS);
+        baseMetricsStrategy = BaseMetricsFactory.getBaseMetric(BaseMetricEnum.ANNOTATIONS);
         int annotations = baseMetricsStrategy.calculateMetric(ontology);
-        baseMetricsStrategy = BaseMetricsFactory.getBaseMetric(BaseMetric.PROPERTIES);
+        baseMetricsStrategy = BaseMetricsFactory.getBaseMetric(BaseMetricEnum.PROPERTIES);
         int properties = baseMetricsStrategy.calculateMetric(ontology);
-        baseMetricsStrategy = BaseMetricsFactory.getBaseMetric(BaseMetric.CLASSES);
+        baseMetricsStrategy = BaseMetricsFactory.getBaseMetric(BaseMetricEnum.CLASSES);
         int classes = baseMetricsStrategy.calculateMetric(ontology);
-        baseMetricsStrategy = BaseMetricsFactory.getBaseMetric(BaseMetric.INSTANCES);
+        baseMetricsStrategy = BaseMetricsFactory.getBaseMetric(BaseMetricEnum.INSTANCES);
         int instances = baseMetricsStrategy.calculateMetric(ontology);
-        baseMetricsStrategy = BaseMetricsFactory.getBaseMetric(BaseMetric.SUBCLASSES);
+        baseMetricsStrategy = BaseMetricsFactory.getBaseMetric(BaseMetricEnum.SUBCLASSES);
         int subClasses = baseMetricsStrategy.calculateMetric(ontology);
-        baseMetricsStrategy = BaseMetricsFactory.getBaseMetric(BaseMetric.SUPERCLASSES);
+        baseMetricsStrategy = BaseMetricsFactory.getBaseMetric(BaseMetricEnum.SUPERCLASSES);
         int superClasses = baseMetricsStrategy.calculateMetric(ontology);
-        baseMetricsStrategy = BaseMetricsFactory.getBaseMetric(BaseMetric.RELATIONS_THING);
+        baseMetricsStrategy = BaseMetricsFactory.getBaseMetric(BaseMetricEnum.RELATIONS_THING);
         int relationThing = baseMetricsStrategy.calculateMetric(ontology);
-        baseMetricsStrategy = BaseMetricsFactory.getBaseMetric(BaseMetric.CLASS_WITH_INDIVIDUALS);
+        baseMetricsStrategy = BaseMetricsFactory.getBaseMetric(BaseMetricEnum.CLASS_WITH_INDIVIDUALS);
         int classWithIndividuals = baseMetricsStrategy.calculateMetric(ontology);
 
         MetricOntologyModel metricsOntology = new MetricOntologyBuilder(name).setNumAnnotations(annotations).
@@ -127,7 +125,7 @@ public class DashBoardBean implements Serializable {
          try {
              QualityMetricsStrategy qualityMetricsStrategy;
              QualityMetricFactory qualityMetricFactory = new QualityMetricFactory();
-             int totalMetricsQuality = QualityMetric.values().length;
+             int totalMetricsQuality = QualityMetricEnum.values().length;
              int positionMetric = 0;
 
              while(positionMetric < totalMetricsQuality){
@@ -136,7 +134,7 @@ public class DashBoardBean implements Serializable {
                  positionMetric++;
              }
 
-             jsonDataMetrics = UtilClass.arrayToJsonString(data);
+             jsonDataMetrics = Util.arrayToJsonString(data);
 
         } catch (JsonProcessingException ex) {
             Logger.getLogger(DashBoardBean.class.getName()).log(Level.SEVERE, null, ex);

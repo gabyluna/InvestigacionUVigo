@@ -1,7 +1,9 @@
 package decisionmakertool.metrics;
 
-import decisionmakertool.metrics.strategy.*;
 import decisionmakertool.owl.OntologyUtil;
+import metrics.basemetrics.BaseMetricEnum;
+import metrics.basemetrics.BaseMetricsFactory;
+import metrics.basemetrics.BaseMetricsStrategy;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,49 +23,49 @@ public class BaseMetricsTest {
 
     @Test
     public void getNumSuperClasses(){
-        baseMetricsStrategy = baseMetricsFactory.getBaseMetric(BaseMetric.SUPERCLASSES);
+        baseMetricsStrategy = baseMetricsFactory.getBaseMetric(BaseMetricEnum.SUPERCLASSES);
         Assert.assertEquals(1141,baseMetricsStrategy.calculateMetric(ontologyActual));
     }
 
     @Test
     public void getNumClasses() {
-        baseMetricsStrategy = baseMetricsFactory.getBaseMetric(BaseMetric.CLASSES);
+        baseMetricsStrategy = baseMetricsFactory.getBaseMetric(BaseMetricEnum.CLASSES);
         Assert.assertEquals(923,baseMetricsStrategy.calculateMetric(ontologyActual));
     }
 
     @Test
     public void getNumSubClasses() {
-        baseMetricsStrategy = baseMetricsFactory.getBaseMetric(BaseMetric.SUBCLASSES);
+        baseMetricsStrategy = baseMetricsFactory.getBaseMetric(BaseMetricEnum.SUBCLASSES);
         Assert.assertEquals(1124,baseMetricsStrategy.calculateMetric(ontologyActual));
     }
 
     @Test
     public void getNumInstances() {
-        baseMetricsStrategy = baseMetricsFactory.getBaseMetric(BaseMetric.INSTANCES);
+        baseMetricsStrategy = baseMetricsFactory.getBaseMetric(BaseMetricEnum.INSTANCES);
         Assert.assertEquals(370,baseMetricsStrategy.calculateMetric(ontologyActual));
     }
 
     @Test
     public void getNumProperties() {
-        baseMetricsStrategy = baseMetricsFactory.getBaseMetric(BaseMetric.PROPERTIES);
+        baseMetricsStrategy = baseMetricsFactory.getBaseMetric(BaseMetricEnum.PROPERTIES);
         Assert.assertEquals(48,baseMetricsStrategy.calculateMetric(ontologyActual));
     }
 
     @Test
     public void getNumAnnotation() {
-        baseMetricsStrategy = baseMetricsFactory.getBaseMetric(BaseMetric.ANNOTATIONS);
+        baseMetricsStrategy = baseMetricsFactory.getBaseMetric(BaseMetricEnum.ANNOTATIONS);
         Assert.assertEquals(4020,baseMetricsStrategy.calculateMetric(ontologyActual));
     }
 
     @Test
     public void getNumRelationsOfThing() {
-        baseMetricsStrategy = baseMetricsFactory.getBaseMetric(BaseMetric.RELATIONS_THING);
+        baseMetricsStrategy = baseMetricsFactory.getBaseMetric(BaseMetricEnum.RELATIONS_THING);
         Assert.assertEquals(922,baseMetricsStrategy.calculateMetric(ontologyActual));
     }
 
     @Test
     public void getNumClassesWithIndividuals() {
-        baseMetricsStrategy = baseMetricsFactory.getBaseMetric(BaseMetric.CLASS_WITH_INDIVIDUALS);
+        baseMetricsStrategy = baseMetricsFactory.getBaseMetric(BaseMetricEnum.CLASS_WITH_INDIVIDUALS);
         Assert.assertEquals(1,baseMetricsStrategy.calculateMetric(ontologyActual));
     }
 

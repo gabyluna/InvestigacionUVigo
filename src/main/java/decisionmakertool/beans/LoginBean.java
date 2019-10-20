@@ -7,7 +7,7 @@ package decisionmakertool.beans;
 
 import decisionmakertool.util.SessionUtils;
 import decisionmakertool.dao.LoginDAO;
-import decisionmakertool.util.UtilClass;
+import decisionmakertool.util.Util;
 import org.springframework.web.context.annotation.SessionScope;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -67,7 +67,7 @@ public class LoginBean implements Serializable {
             property.load(inputFile);
             String key = property.getProperty("key");
             String initializationVector = property.getProperty("iv");
-            result = UtilClass.encrypt(key, initializationVector, value);
+            result = Util.encrypt(key, initializationVector, value);
         } catch (Exception e) {
             Logger.getLogger(LoginBean.class.getName()).log(Level.SEVERE, null, e);
         }

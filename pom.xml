@@ -36,42 +36,6 @@
             <artifactId>javax.faces</artifactId>
             <version>2.1.17</version>
         </dependency>
-       <dependency>
-            <groupId>net.sourceforge.owlapi</groupId>
-            <artifactId>owlapi-distribution</artifactId>
-            <version>3.5.1</version>
-          <exclusions>
-             <exclusion>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
-             </exclusion>
-             <exclusion>
-                <groupId>net.sourceforge.owlapi</groupId>
-                <artifactId>owlapi-oboformat</artifactId>
-             </exclusion>
-             <exclusion>
-                <groupId>net.sourceforge.owlapi</groupId>
-                <artifactId>owlapi-rio</artifactId>
-             </exclusion>
-             <exclusion>
-                <groupId>net.sourceforge.owlapi</groupId>
-                <artifactId>owlapi-tools</artifactId>
-             </exclusion>
-             <exclusion>
-                <groupId>net.sourceforge.owlapi</groupId>
-                <artifactId>owlapi-parsers</artifactId>
-             </exclusion>
-             <exclusion>
-                <groupId>net.sourceforge.owlapi</groupId>
-                <artifactId>owlapi-impl</artifactId>
-             </exclusion>
-             <exclusion>
-                <groupId>net.sourceforge.owlapi</groupId>
-                <artifactId>owlapi-compatibility</artifactId>
-             </exclusion>
-          </exclusions>
-          <type>jar</type>
-       </dependency>
         <dependency>
             <groupId>org.jdom</groupId>
             <artifactId>jdom2</artifactId>
@@ -185,15 +149,15 @@
         </dependency>
 
         <dependency>
-            <groupId>org.drontoapi</groupId>
-            <artifactId>drontoapi</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-text</artifactId>
             <version>1.6</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ontoMetrics</groupId>
+            <artifactId>ontoMetrics</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
 
     </dependencies>
