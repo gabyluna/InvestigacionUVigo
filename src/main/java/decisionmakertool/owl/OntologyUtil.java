@@ -6,30 +6,19 @@
 package decisionmakertool.owl;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.semanticweb.owl.explanation.api.Explanation;
 import org.semanticweb.owlapi.apibinding.OWLManager;
-import org.semanticweb.owlapi.io.OWLXMLOntologyFormat;
 import org.semanticweb.owlapi.io.RDFXMLOntologyFormat;
 import org.semanticweb.owlapi.model.*;
 import org.semanticweb.owlapi.reasoner.*;
 import org.semanticweb.owl.explanation.api.ExplanationGenerator;
 import org.semanticweb.owl.explanation.impl.blackbox.checker.InconsistentOntologyExplanationGeneratorFactory;
-import org.semanticweb.owlapi.reasoner.structural.StructuralReasonerFactory;
-import org.semanticweb.owlapi.util.DefaultPrefixManager;
-import org.semanticweb.owlapi.util.OWLEntityRemover;
-import org.semanticweb.owlapi.util.OWLEntityURIConverter;
 import uk.ac.manchester.cs.jfact.JFactFactory;
-import uk.ac.manchester.cs.owl.owlapi.OWLImportsDeclarationImpl;
-
 import javax.faces.context.FacesContext;
-
-import static com.sun.deploy.trace.Trace.flush;
 
 public class OntologyUtil {
 
@@ -111,7 +100,8 @@ public class OntologyUtil {
     }
 
     public void removeAxioms(String valueURI) throws OWLOntologyStorageException {
-        saveOntology("ontoFinalCopy.owl");
+        //saveOntology("ontoFinalCopy.owl");
+        System.out.println("Element:" + valueURI);
         OWLClass owlClass = manager . getOWLDataFactory().getOWLClass(IRI.create(valueURI));
         Set < OWLAxiom > axiomsToRemove =  new  HashSet <> ();
         for ( OWLAxiom axiom : ontology.getAxioms ()) {
@@ -121,8 +111,7 @@ public class OntologyUtil {
             }
         }
          manager.removeAxioms (ontology, axiomsToRemove);
-         saveOntology("ontoFinal.owl");
-         //manager.saveOntology(ontology, new RDFXMLOntologyFormat());
+         saveOntology("ontoQuickFix1.owl");
     }
 
     public void saveOntology(String nameOwl) throws OWLOntologyStorageException {

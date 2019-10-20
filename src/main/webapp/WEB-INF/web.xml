@@ -10,7 +10,6 @@
 
     <!-- Listener para cargar el contexto Spring. -->
 
-
     <listener>
         <listener-class>
             org.springframework.web.context.ContextLoaderListener

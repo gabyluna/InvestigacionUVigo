@@ -1,9 +1,9 @@
 package decisionmakertool.metrics;
 
-import decisionmakertool.metrics.qualitymetrics.QualityMetric;
-import decisionmakertool.metrics.qualitymetrics.QualityMetricFactory;
-import decisionmakertool.metrics.qualitymetrics.QualityMetricsStrategy;
-import decisionmakertool.model.MetricOntologyModel;
+import metrics.qualitymetrics.QualityMetricEnum;
+import metrics.qualitymetrics.QualityMetricFactory;
+import metrics.qualitymetrics.QualityMetricsStrategy;
+import model.MetricOntologyModel;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,7 +40,7 @@ public class RrontoMetricTest {
     @Test
     public void rrontoMetric() {
         QualityMetricsStrategy qualityMetricsStrategy;
-        qualityMetricsStrategy = qualityMetricFactory.getQualityMetric(QualityMetric.RROnto.getType());
+        qualityMetricsStrategy = qualityMetricFactory.getQualityMetric(QualityMetricEnum.RROnto.getType());
         System.out.println("Parameterized Number expected is : " + expectedResult);
         Assert.assertEquals(1, qualityMetricsStrategy.calculateQualityMetric(metricOntologyModel));
     }
