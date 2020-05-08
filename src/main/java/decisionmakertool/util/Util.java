@@ -7,6 +7,7 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
+import java.io.*;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -53,4 +54,22 @@ public class Util {
         return  mapper.writeValueAsString(object);
     }
 
+    public static void loadFile(String path, InputStream in) throws IOException {
+        int read;
+        byte[] bytes = new byte[1024];
+
+        try(OutputStream out = new FileOutputStream(new File(path))){
+            while ((read = in.read(bytes)) != -1) {
+                out.write(bytes, 0, read);
+            }
+            in.close();
+            out.flush();
+        }
+    }
+
+    public static String getWord(String word){
+        String []arrayAux = word.split("#");
+        String []result = arrayAux[arrayAux.length-1].split("_");
+        return result[0];
+    }
 }

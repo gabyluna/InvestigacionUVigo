@@ -5,10 +5,13 @@
  */
 package decisionmakertool.beans;
 
+import decisionmakertool.entities.User;
 import decisionmakertool.util.SessionUtils;
 import decisionmakertool.dao.LoginDAO;
 import decisionmakertool.util.Util;
-import org.springframework.web.context.annotation.SessionScope;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.Serializable;
@@ -16,19 +19,18 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 
-@ManagedBean
-@SessionScope
+@Scope(value = "session")
+@Component(value = "loginBean")
 public class LoginBean implements Serializable {
     private static final long serialVersionUID = 1094801825228386363L;
     private static final String PATH_FILE_PROPERTIES = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/resources")
             + "/loginKeys.properties";
     private String pwd;
     private String msg;
-    private String user;
+    private String username;
     private Boolean render = Boolean.FALSE;
 
     public void validateUsernamePassword()  {
@@ -38,11 +40,11 @@ public class LoginBean implements Serializable {
 
         try {
             String pwdEncrypted =encryptValue(pwd);
-            boolean valid = loginDAO.validate(user, pwdEncrypted);
+            boolean valid = loginDAO.validate(username, pwdEncrypted);
 
             if (valid) {
                 HttpSession session = SessionUtils.getSession();
-                session.setAttribute("username", user);
+                session.setAttribute("username", username);
                 context.getExternalContext().redirect(pathURLApplication + "/index.xhtml");
             } else {
                 render = Boolean.TRUE;
@@ -96,12 +98,12 @@ public class LoginBean implements Serializable {
         this.msg = msg;
     }
 
-    public String getUser() {
-        return user;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUser(String user) {
-        this.user = user;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public Boolean getRender() {

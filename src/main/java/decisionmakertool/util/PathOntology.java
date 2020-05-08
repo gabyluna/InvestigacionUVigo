@@ -6,11 +6,12 @@ public class PathOntology {
 
     private String pathAutomaticOntology;
     private String pathManualOntology;
+    private String REAL_PATH = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/resources");
 
     public PathOntology() {
-        String realpath = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/resources");
-        pathAutomaticOntology = realpath + "/ontoFinal.owl";
-        pathManualOntology = realpath + "/ontoBase.owl";
+
+        pathAutomaticOntology = REAL_PATH + "/ontoFinal.owl";
+        pathManualOntology = REAL_PATH + "/ontoBase.owl";
     }
 
     public String getPathAutomaticOntology() {
@@ -20,6 +21,8 @@ public class PathOntology {
     public String getPathManualOntology() {
         return pathManualOntology;
     }
+
+    public String getREAL_PATH() { return REAL_PATH; }
 
 
 }

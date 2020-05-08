@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="template.xhtml"  >
+
+    <ui:define name="title2"> 
+        Historial Ontology
+    </ui:define>
+
+    <ui:define name="contenido">
+        <h:form id="form"  enctype="multipart/form-data">
+            <!-- Menu -->
+
+            <p:growl id="messages" showDetail="true" />
+            <f:metadata>
+                <f:event type="preRenderView" listener="#{historialBean.loadHistorial}" />
+            </f:metadata>
+
+
+            <p:separator />
+
+            <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+
+            <p:dataTable id="listHistorial" var="historial" value="#{historialBean.listHistorialOntology}"
+                         rows="10"
+                         paginator="true">
+
+                <p:column headerText="Version" style="width: 100px">
+                    <h:outputText value="version #{historial.id}" />
+                </p:column>
+                <p:column headerText="State" style="width: 50px">
+                    <p:selectBooleanButton id="value1" value="#{historial.state}" onLabel="Active"
+                                           offLabel="Inactive" style="width:80px" >
+                        <p:ajax update="messages" listener="#{historialBean.updateState}" />
+                    </p:selectBooleanButton>
+                </p:column>
+                <p:column headerText="Description" style="width: 250px">
+                    <h:outputText value="#{historial.description}" />
+                </p:column>
+                <p:column headerText="Quick Fix" style="width: 100px">
+                    <h:outputText value="#{historial.quickFix == 1 ? 'Remove Axioms' : 'Remove Synonims'}" />
+                </p:column>
+                <p:column headerText="Date" style="width: 80px">
+                    <h:outputText value="#{historial.date}" />
+                </p:column>
+                <p:column headerText="Download" style="width:50px;text-align: center">
+                    <p:commandLink ajax="false" action="#{historialBean.downloadFile}" ><i class="fa fa-download"></i>
+                        <f:setPropertyActionListener value="#{historial}" target="#{historialBean.historialSelected}" />
+                        <p:fileDownload value="#{historialBean.file}" />
+                    </p:commandLink>
+                </p:column>
+
+            </p:dataTable>
+
+            <!-- /top tiles -->
+            <p:separator />
+
+
+            <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="true">
+                <p:graphicImage library="images" name="estatus.gif" style="width: 100px; height: 50px"/>
+            </p:dialog>
+
+
+
+
+
+        </h:form>
+    </ui:define>
+</ui:composition>

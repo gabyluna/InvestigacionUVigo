@@ -9,53 +9,33 @@
 
 
 
-    <ui:define name="titlePanel"> 
-        Form Upload
+    <ui:define name="titlePanel">
+        Upload Files
     </ui:define>
     <ui:define name="title2"> 
         Select type ontology:
     </ui:define>
-    <ui:define name="contenido">  
+    <ui:define name="contenido">
         <h:form   enctype="multipart/form-data">
 
             <p:growl id="messages" showDetail="true" />
-            <h:panelGrid columns="3" style="margin-bottom:10px" cellpadding="5">
-                <p:outputPanel id="customPanel" style="margin-bottom:10px">
-                    <p:selectOneRadio id="selectOption" value="#{fileUploadBean.chooseMode}" layout="custom" >
-                        <f:selectItem itemLabel="Base Ontology" itemValue="B" />
-                        <p:spacer width="20px" />
-                        <f:selectItem itemLabel="Automatic Ontology" itemValue="A" />
-                    </p:selectOneRadio>
-                    <h:panelGrid columns="5" cellpadding="5">
-                        <p:radioButton id="opt1" for="selectOption" itemIndex="0" />
-                        <h:outputLabel for="opt1" value="Base Ontology" style="font-size: 12px;"/>
-                        <p:spacer width="20" />
-                        <p:radioButton id="opt2" for="selectOption" itemIndex="1" />
-                        <h:outputLabel for="opt2" value="Automatic Ontology" style="font-size: 12px" />
-
-                    </h:panelGrid>
-                </p:outputPanel>
-                <p:spacer width="20" />
+            <h:panelGrid columns="5" style="margin-bottom:10px" cellpadding="5">
+                <p:selectOneMenu id="console" value="#{fileUploadBean.chooseMode}" style="width:180px">
+                    <f:selectItem itemLabel="Select type" itemValue="" />
+                    <f:selectItem itemLabel="Reference Ontology" itemValue="B" />
+                    <f:selectItem itemLabel="Automatic Ontology" itemValue="A" />
+                </p:selectOneMenu>
+                <p:spacer width="10" />
                 <p:fileUpload value="#{fileUploadBean.file}" mode="simple" skinSimple="true"  />
             </h:panelGrid>
 
-            <p:spacer height="20" />
+            <p:spacer height="10" />
 
-            <h:panelGrid columns="2" style="margin:0 auto;" >
+
+            <h:panelGrid columns="1" style="margin:0 auto;" >
                 <p:commandButton styleClass="btn btn-round btn-primary" value="Submit" ajax="false" actionListener="#{fileUploadBean.upload}"  />
-                <p:commandButton styleClass="btn btn-round btn-primary" value="Validation" ajax="false" actionListener="#{fileUploadBean.validation}"  />
             </h:panelGrid>
 
-            <p:separator />
-
-            <p:panelGrid columns="1" style="margin:0 auto">
-                <f:facet name="header">
-                    <h:outputText value="Result Validation" />
-                </f:facet>
-
-                <h:outputText value="#{fileUploadBean.answer}" />
-
-            </p:panelGrid>
         </h:form>
     </ui:define>
 </ui:composition>

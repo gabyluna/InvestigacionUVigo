@@ -1,33 +1,35 @@
 package decisionmakertool.beans;
 
+import decisionmakertool.dao.OntologyDAO;
+import decisionmakertool.entities.Historial;
 import decisionmakertool.owl.OntologyUtil;
 import decisionmakertool.util.PathOntology;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+
+import java.io.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpSession;
+
+import decisionmakertool.util.SessionUtils;
+import decisionmakertool.util.Util;
 import org.primefaces.model.UploadedFile;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.annotation.SessionScope;
+import org.w3c.dom.Document;
 
 
-@Component
-@Scope("singleton")
-public class FileUploadBean {
+@Scope(value = "session")
+@Component(value = "fileUploadBean")
+public class FileUploadBean implements Serializable {
 
     private UploadedFile file;
     private String chooseMode;
     private OntologyUtil loadOntology;
     private String answer;
+    private OntologyDAO ontologyDAO = new OntologyDAO();
 
     @PostConstruct
     public void init() {
@@ -50,33 +52,32 @@ public class FileUploadBean {
     }
 
     private void copyFile(InputStream in) {
-        PathOntology pathOntology = new PathOntology();
-
         try {
+
             if (chooseMode.equals(OntologyType.AUTOMATIC.getType())) {
-                loadFile(pathOntology.getPathAutomaticOntology(),in);
+                ontologyDAO.insert(getDataHistorial(OntologyType.AUTOMATIC.getType()), in);
             }
             if (chooseMode.equals(OntologyType.BASE.getType())) {
-                loadFile(pathOntology.getPathManualOntology(),in);
+                ontologyDAO.insert(getDataHistorial(OntologyType.BASE.getType()), in);
             }
         } catch (IOException ex) {
             Logger.getLogger(FileUploadBean.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    private void loadFile(String path, InputStream in) throws IOException {
-        int read;
-        byte[] bytes = new byte[1024];
-
-        try(OutputStream out = new FileOutputStream(new File(path))){
-            while ((read = in.read(bytes)) != -1) {
-                out.write(bytes, 0, read);
-            }
-            in.close();
-            out.flush();
-        }
-
+    public Historial getDataHistorial(String typeOntology){
+        PathOntology pathOntology = new PathOntology();
+        HttpSession session = SessionUtils.getSession();
+        String user = session.getAttribute("username").toString();
+        Historial historial = new Historial();
+        historial.setPath(pathOntology.getREAL_PATH());
+        historial.setType(typeOntology);
+        historial.setDescription("");
+        historial.setUname(user);
+        historial.setQuickFix(0);
+        return historial;
     }
+
 
     public void validation() {
         PathOntology pathOntologyBase = new PathOntology();
