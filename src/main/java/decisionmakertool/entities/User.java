@@ -3,7 +3,10 @@ package decisionmakertool.entities;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity(name = "user")
 public class User implements Serializable {
@@ -13,6 +16,9 @@ public class User implements Serializable {
 
     @Column(name = "UPASSWORD")
     private  String upassword;
+
+    @OneToMany(mappedBy = "user")
+    private List<User> users = new ArrayList<>();
 
     public User(){
 
@@ -48,5 +54,14 @@ public class User implements Serializable {
 
     public void setUpassword(String upassword) {
         this.upassword = upassword;
+    }
+
+
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
     }
 }

@@ -8,131 +8,155 @@
                 template="template.xhtml"  >
 
     <ui:define name="title2"> 
-        Report Pitfalls 
+        Detection Errors
     </ui:define>
 
     <ui:define name="contenido">
         <h:form id="form"  enctype="multipart/form-data">
-            <!-- Menu -->
 
             <p:growl id="messages" showDetail="true" />
 
-            <h:panelGrid columns="5" cellpadding="5">
+            <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+
+            <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="true">
+                <p:graphicImage library="images" name="estatus.gif" style="width: 100px; height: 50px"/>
+            </p:dialog>
+
+            <p:outputPanel id="panelDetection" rendered="#{pitfallsBean.showPanelDetection}">
+                <h:panelGrid columns="5" cellpadding="5">
                     <p:outputLabel for="selectOntology" value="Select a ontology: " />
                     <p:spacer width="10px" />
-                    <p:selectOneMenu id="selectOntology" value="#{pitfallsBean.pathOntology}" style="width:150px">
+                    <p:selectOneMenu id="selectOntology" value="#{pitfallsBean.typeOntology}" style="width:150px">
                         <f:selectItem itemLabel="--- Select one ---" itemValue="" noSelectionOption="true" />
-                        <f:selectItem itemLabel="Manual Ontology" itemValue="#{pitfallsBean.path.pathManualOntology}" noSelectionOption="true" />
-                        <f:selectItem itemLabel="Automatic Ontology" itemValue="#{pitfallsBean.path.pathAutomaticOntology}" noSelectionOption="true" />
+                        <f:selectItem itemLabel="Reference Ontology" itemValue="B" noSelectionOption="true" />
+                        <f:selectItem itemLabel="Target Ontology" itemValue="A" noSelectionOption="true" />
                     </p:selectOneMenu>
                     <p:spacer width="20px" />
                     <p:commandButton styleClass="btn btn-round btn-primary" value="Search" ajax="false"
                                      action="#{pitfallsBean.loadPitfalls}"
                                      onclick="PF('statusDialog').show()" oncomplete="PF('statusDialog').hide()"/>
 
-            </h:panelGrid>
+                </h:panelGrid>
 
-            <p:separator />
+                <p:separator />
 
-            <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
 
-            <p:dataTable id="affectedElements" var="pitfall" value="#{pitfallsBean.listPitfalls}">
+                <p:dataTable id="affectedElements" var="pitfall" value="#{pitfallsBean.listPitfalls}">
 
-                <p:column headerText="Dimension" style="width: 100px">
-                    <h:outputText value="#{(pitfall.code eq 'P06' ? 'Circularity' :
+                    <p:column headerText="Dimension" style="width: 100px">
+                        <h:outputText value="#{(pitfall.code eq 'P06' ? 'Circularity' :
                                            (pitfall.code eq 'P10' ? 'Partition' :
                                            (pitfall.code eq 'P04' eq 'P08' eq 'P11' eq 'P13' ? 'Incompleteness' :'Semantic')))}" />
-                </p:column>
-                <p:column headerText="Description" style="width: 250px">
-                    <h:outputText value="#{pitfall.name}" />
-                </p:column>
-                <p:column sortBy="#{pitfall.importanceLevel}" headerText="Importance"
-                          style="width: 100px;  background:#{pitfall.importanceLevel eq 'Minor' ? '#F3F781'
+                    </p:column>
+                    <p:column headerText="Description" style="width: 250px">
+                        <h:outputText value="#{pitfall.name}" />
+                    </p:column>
+                    <p:column sortBy="#{pitfall.importanceLevel}" headerText="Importance"
+                              style="width: 100px;  background:#{pitfall.importanceLevel eq 'Minor' ? '#F3F781'
                                                              : pitfall.importanceLevel eq 'Important' ? '#F7BE81'
                                                              : pitfall.importanceLevel eq 'Critical' ? '#F78181':null} " >
-                    <h:outputText value="#{pitfall.importanceLevel}"  />
-                </p:column>
+                        <h:outputText value="#{pitfall.importanceLevel}"  />
+                    </p:column>
 
-                <p:column style="width:32px;text-align: center">
-                    <p:commandButton update=":form:elementsDetail" action="#{pitfallsBean.loadAffectedElements(pitfall)}"
-                                     oncomplete="PF('elementsDialog').show()" icon="pi pi-search" title="View">
-                        <f:setPropertyActionListener value="#{pitfall}" target="#{pitfallsBean.selectedPitfall}" />
-                    </p:commandButton>
-                </p:column>
-            </p:dataTable>
+                    <p:column style="width:80px;text-align: center">
+                        <p:commandButton  styleClass="btn btn-primary"
+                                          update=":form:panelDetection,:form:panelSimulation" ajax="false"
+                                          action="#{pitfallsBean.loadAffectedElements(pitfall)}"
+                                          onclick="PF('statusDialog').show()" oncomplete="PF('statusDialog').hide()"
+                                          value="Apply Quick Fix" >
+                            <f:setPropertyActionListener value="#{pitfall}" target="#{pitfallsBean.selectedPitfall}" />
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+            </p:outputPanel>
 
             <!-- /top tiles -->
             <p:separator />
 
-
-            <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="true">
-                <p:graphicImage library="images" name="estatus.gif" style="width: 100px; height: 50px"/>
-            </p:dialog>
-
-
-            <p:dialog header="Quick Fix" widgetVar="elementsDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
-                <p:ajax event="close" update=":form:affectedElements" />
-                <p:panelGrid columns="5">
+            <p:outputPanel id="panelSimulation" legend="Simulation" rendered="#{pitfallsBean.showPanelSimulation}">
+                <h:panelGrid columns="5" cellpadding="5">
                     <p:outputLabel for="selectQuickFix" value="Select a quick fix: " />
                     <p:spacer width="10px" />
-                    <p:selectOneMenu id="selectQuickFix" value="#{pitfallsBean.quickFixSelected}" style="width:150px">
-                        <f:selectItem itemLabel="--- Select one ---" itemValue="" noSelectionOption="true" />
-                        <f:selectItem itemLabel="Remove Axioms" itemValue="1" noSelectionOption="true" />
-                        <f:selectItem itemLabel="Remove Synonims" itemValue="2" noSelectionOption="true" />
+                    <p:selectOneMenu id="selectQuickFix" value="#{pitfallsBean.quickFixSelected}" style="width:180px">
+                        <f:selectItem itemLabel="--- Select one ---" itemValue=""  />
+                        <f:selectItem itemLabel="Remove Axioms" itemValue="1"  />
+                        <f:selectItem itemLabel="Remove Synonims" itemValue="2"  />
                     </p:selectOneMenu>
                     <p:spacer width="20px" />
-                    <p:commandButton styleClass="btn btn-round btn-primary" value="Search" ajax="true"
+                    <p:commandButton styleClass="btn btn-round btn-primary" value="Simulate" ajax="false"
                                      action="#{pitfallsBean.applyQuickFix}" update="tableAffectedElements1,areaOntology"
                                      onclick="PF('statusDialog').show()" oncomplete="PF('statusDialog').hide()"/>
+                </h:panelGrid>
 
-                </p:panelGrid>
+                <p:spacer height="20px" />
 
-                <p:outputPanel id="elementsDetail" style="text-align:center;">
-                    <p:panelGrid  columns="1" rendered="#{not empty pitfallsBean.selectedPitfall}" >
-                        <p:dataTable id="tableAffectedElements1" var="element" value="#{pitfallsBean.listAffectedElements}"
-                                     scrollable="true" scrollHeight="150" style="margin-bottom:0">
+                <h:panelGrid   id="elementsDetail" columns="1" rendered="#{not empty pitfallsBean.selectedPitfall}" >
+                    <p:dataTable id="tableAffectedElements1" var="element" value="#{pitfallsBean.listAffectedElements}"
+                                 scrollable="true" scrollHeight="150" style="margin-bottom:0">
 
+                        <f:facet name="header">
+                            Elements Affected #{(pitfallsBean.selectedPitfall.code eq 'P06' ? 'Circularity' :
+                                (pitfallsBean.selectedPitfall.code eq 'P10' ? 'Partition' :
+                                        (pitfallsBean.selectedPitfall.code eq 'P04' eq 'P08' eq 'P11' eq 'P13' ? 'Incompleteness' :'Semantic')))}
+                        </f:facet>
+                        <p:column style="width: 60px; text-align:center" >
                             <f:facet name="header">
-                                Elements Affected #{(pitfallsBean.selectedPitfall.code eq 'P06' ? 'Circularity' :
-                                    (pitfallsBean.selectedPitfall.code eq 'P10' ? 'Partition' :
-                                            (pitfallsBean.selectedPitfall.code eq 'P04' eq 'P08' eq 'P11' eq 'P13' ? 'Incompleteness' :'Semantic')))}
+                                <p:selectBooleanCheckbox value="#{pitfallsBean.selectAll}" >
+                                    <p:ajax listener="#{pitfallsBean.selectAllElements}" update=":form:elementsDetail" />
+                                </p:selectBooleanCheckbox>
                             </f:facet>
-                            <p:column style="width: 60px" >
-                                <f:facet name="header">
-                                    <p:selectBooleanCheckbox value="#{pitfallsBean.selectAll}" >
-                                        <p:ajax listener="#{pitfallsBean.selectAllElements}" update=":form:elementsDetail" />
-                                    </p:selectBooleanCheckbox>
-                                </f:facet>
-                                <p:selectBooleanCheckbox value="#{element.selected}" />
-                            </p:column>
-                            <p:column sortBy="#{element.URI}"  headerText="Elements" footerText="total: #{pitfallsBean.listAffectedElements.size()}" >
-                                <h:outputText value="#{element.URI}" />
-                            </p:column>
+                            <p:selectBooleanCheckbox value="#{element.selected}" />
+                        </p:column>
+                        <p:column sortBy="#{element.URI}"  headerText="Elements" footerText="total: #{pitfallsBean.listAffectedElements.size()}" >
+                            <h:outputText value="#{element.URI}" />
+                        </p:column>
+                    </p:dataTable>
+                </h:panelGrid>
 
-                        </p:dataTable>
+                <p:spacer height="20px" />
 
-                        <p:spacer height="10px" />
+                <p:separator />
 
-                        <p:commandButton value="Apply Quick Fix" action="#{pitfallsBean.destroyWorld}" update="messages">
-                            <p:confirm header="Confirmation" message="Are you sure?" icon="pi pi-exclamation-triangle" />
-                        </p:commandButton>
+                <h:panelGrid id="areaOntology" columns="1" style="margin:0">
+                    <div class="table-responsive">
+                        <table class="table table-striped jambo_table bulk_action">
+                            <thead>
+                                <tr class="headings">
+                                    <th colspan="2" class="column-title">Result Simulation</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="even pointer">
+                                    <td class="a-center ">Calculated area: #{pitfallsBean.area}</td>
+                                    <td class="a-center ">#{dashBoardBean.areaPolygonAutomaticOntology}</td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                               <p:commandButton value="Apply Quick Fix" onclick="PF('widgetQuickFix').show();"
+                                                         styleClass="btn btn-success" />
 
-                        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
-                            <p:commandButton value="Yes"  styleClass="ui-confirmdialog-yes"
-                                             action="#{pitfallsBean.saveQuickFix}"
-                                             update=":form:elementsDetail"/>
-                            <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no"  />
-                        </p:confirmDialog>
+                            </tfoot>
+                        </table>
+                    </div>
+                </h:panelGrid>
 
-                    </p:panelGrid>
-                    <p:panelGrid id="areaOntology" columns="1">
-                        <p:outputLabel value="Calculated area: #{pitfallsBean.area}" />
-                        <p:outputLabel value="Actual area: #{dashBoardBean.areaPolygonAutomaticOntology}" />
-                    </p:panelGrid>
-                </p:outputPanel>
-            </p:dialog>
-
+                <p:dialog header="Apply Quick Fix" widgetVar="widgetQuickFix" minHeight="40">
+                    <h:panelGrid columns="1">
+                        <p>Insert a description</p>
+                        <p:inputTextarea rows="6" cols="33" value="#{pitfallsBean.description}"/>
+                    </h:panelGrid>
+                    <p:separator/>
+                    <h:panelGrid columns="1" style="margin-bottom: 0">
+                        <p:commandButton id="btnSave" value="Save"  styleClass="ui-confirmdialog-yes"
+                                   ajax="false"  action="#{pitfallsBean.saveQuickFix}"
+                                   onclick="PF('statusDialog').show()" oncomplete="PF('statusDialog').hide()"
+                                   update=":form:panelSimulation,:form:panelDetection, messages"/>
+                    </h:panelGrid>
+                </p:dialog>
+            </p:outputPanel>
 
         </h:form>
+
+
     </ui:define>
 </ui:composition>

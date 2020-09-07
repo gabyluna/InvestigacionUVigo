@@ -7,7 +7,7 @@
     <f:view contentType="text/html">
 
         <h:head>
-            <title>C3 - SEC</title>
+            <title>Ontology Fixer</title>
             <!-- Bootstrap core CSS -->
 
             <link rel="stylesheet" type="text/css"
@@ -44,7 +44,7 @@
                             <div class="navbar nav_title" style="border: 0;">
                                 <a href="index.xhtml" class="site_title">
                                     <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
-                                    <span>C3 - SEC</span></a>
+                                    <span>Ontology Fixer</span></a>
                             </div>
                             <div class="clearfix"></div>
 
@@ -55,7 +55,7 @@
                                 </div>
                                 <div class="profile_info">
                                     <span>Welcome,</span>
-                                    <h2>#{loginBean.user}</h2>
+                                    <h2>#{loginBean.username}</h2>
                                 </div>
                             </div>
                             <!-- /menu prile quick info -->
@@ -69,21 +69,16 @@
                                  <div class="menu_section">
                                     <h3>General</h3>
                                     <ul class="nav side-menu">
-                                        <li><a><i class="fa fa-home"></i> Home <span
+                                        <li><a href="index.xhtml"><i class="fa fa-upload"></i> Upload Ontology</a></li>
+                                        <li><a><i class="fa fa-bug"></i> Evaluation <span
                                                     class="fa fa-chevron-down"></span></a>
                                             <ul class="nav child_menu" style="display: none">
-                                                <li><a href="index.xhtml">Upload Files</a></li>
-                                                <li><a href="dashboardView.xhtml">Dashboard Metrics</a></li>
-                                            </ul></li>
-
-                                        <li><a><i class="fa fa-upload"></i> Reports<span
-                                                    class="fa fa-chevron-down"></span></a>
-                                            <ul class="nav child_menu" style="display: none">
-                                                <li><a href="pitfalls.xhtml">Report Pitfalls</a></li>
-                                            </ul></li>
-
-
-
+                                                <li><a href="dashboardView.xhtml">Ontology Diagnosis</a></li>
+                                                <li><a href="pitfalls.xhtml">Detection Errors</a></li>
+                                            </ul>
+                                        </li>
+                                        <li><a href="historial.xhtml"><i class="fa fa-history"></i>Ontology History</a></li>
+                                        <li><a href="viewer.xhtml"><i class="fa fa-desktop"></i>Visual Data Web</a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -119,7 +114,7 @@
                                         <li class=""><a href="javascript:;"
                                                         class="user-profile dropdown-toggle" data-toggle="dropdown"
                                                         aria-expanded="false"> 
-                                                <h:graphicImage library="images" name="img.jpg"/>#{loginBean.user}
+                                                <h:graphicImage library="images" name="img.jpg"/>#{loginBean.username}
                                                 <span class="fa fa-angle-down"></span>
                                             </a>
                                             <ul

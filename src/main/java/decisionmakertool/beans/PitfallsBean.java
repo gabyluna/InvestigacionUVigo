@@ -1,9 +1,16 @@
 package decisionmakertool.beans;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import decisionmakertool.dao.OntologyDAO;
+import decisionmakertool.entities.Historial;
+import decisionmakertool.entities.QuickFixModel;
 import decisionmakertool.owl.OntologyUtil;
+import decisionmakertool.service.QuickFixFactory;
+import decisionmakertool.service.QuickFixInterface;
 import decisionmakertool.util.PathOntology;
+import decisionmakertool.util.SessionUtils;
 import decisionmakertool.util.Util;
+
 import drontoapi.pitfallmanager.AffectedElement;
 import drontoapi.pitfallmanager.Pitfall;
 import metrics.basemetrics.BaseMetricEnum;
@@ -17,22 +24,23 @@ import metrics.smellerrors.SmellErrorFactory;
 import metrics.smellerrors.SmellErrorTemplate;
 import model.MetricOntologyBuilder;
 import model.MetricOntologyModel;
-import org.apache.commons.text.similarity.LevenshteinDistance;
+import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 import util.UtilClass;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpSession;
 
 @ManagedBean
 @SessionScoped
@@ -43,10 +51,18 @@ public class PitfallsBean implements Serializable {
     private Pitfall selectedPitfall = new Pitfall(0);
     private List<AffectedElement> listAffectedElements = new ArrayList<>();
     private PathOntology path = new PathOntology();
-    private String pathOntology = "";
+    private String typeOntology = "";
     private boolean selectAll = false;
-    private String quickFixSelected = "";
+    private int quickFixSelected = 0;
     private String area = "";
+    private OntologyDAO ontologyDAO = new OntologyDAO();
+    private String pathOntology = "";
+    private String description = "";
+    private boolean disabledSave = true;
+    private boolean showPanelDetection = true;
+    private boolean showPanelSimulation = false;
+    private HttpSession session = SessionUtils.getSession();
+    private String user = session.getAttribute("username").toString();
 
     @PostConstruct
     public void init() {
@@ -56,10 +72,19 @@ public class PitfallsBean implements Serializable {
         if (this.listAffectedElements == null) {
             this.listAffectedElements = new ArrayList<>();
         }
+        clean();
+    }
+
+    public void clean(){
+        listPitfalls = new ArrayList<>();
+        listAffectedElements = new ArrayList<>();
+        setShowPanelSimulation(false);
+        setShowPanelDetection(true);
     }
 
     public void loadPitfalls(){
         listPitfalls = new ArrayList<>();
+        pathOntology = ontologyDAO.findPathOntologyActive(typeOntology);
         SmellErrorTemplate circularityErrorTemplate = SmellErrorFactory.getSmellError(SmellErrorEnum.CIRCULARITY);
         List<Pitfall>  listCircularityErrors = circularityErrorTemplate.getListSmellErrors(pathOntology);
         SmellErrorTemplate partitionErrorTemplate = SmellErrorFactory.getSmellError(SmellErrorEnum.PARTITION);
@@ -91,6 +116,8 @@ public class PitfallsBean implements Serializable {
     public void loadAffectedElements(Pitfall selectedPitfall1) {
        setSelectedPitfall(selectedPitfall);
        listAffectedElements = SmellErrorTemplate.getElementsSmellErrors(pathOntology,selectedPitfall1);
+       setShowPanelSimulation(true);
+       setShowPanelDetection(false);
     }
 
     public void selectAllElements(){
@@ -105,47 +132,26 @@ public class PitfallsBean implements Serializable {
         }
     }
 
-    public void applyQuickFix() throws OWLOntologyStorageException {
+    public void applyQuickFix() {
         OntologyUtil ontologyUtil = new OntologyUtil(pathOntology);
-
-        if(getQuickFixSelected().equals("1")){
-            for(AffectedElement element:listAffectedElements){
-                if(element.getSelected()){
-                    ontologyUtil.removeAxioms(element.getURI());
-                }
-            }
-
-        }else{
-            LevenshteinDistance levenshteinDistance = new LevenshteinDistance();
-            List<AffectedElement> listAffectedElemenstToRemove = new ArrayList<>();
-            int sizeList = listAffectedElements.size();
-
-            for(int i = 0; i < sizeList; i++){
-                if(listAffectedElements.get(i).getSelected()){
-                    String wordAux1 =  getWord(listAffectedElements.get(i).getURI());
-
-                    for(int j=(sizeList-1);j >= 0 ; j--){
-                        String wordAux2 =  getWord(listAffectedElements.get(j).getURI());
-                        int distance = levenshteinDistance.apply(wordAux1,wordAux2);
-
-                        if(distance > 0 && distance < 3) {
-                            listAffectedElemenstToRemove.add(listAffectedElements.get(j));
-                        }
-                    }
-                }
-
-            }
-
-            listAffectedElemenstToRemove = listAffectedElemenstToRemove.stream().collect(Collectors.toCollection(()->
-                    new TreeSet<>(Comparator.comparing(AffectedElement::getURI)))).stream().collect(Collectors.toList());
-            for(AffectedElement element:listAffectedElemenstToRemove){
-               ontologyUtil.removeAxioms(element.getURI());
-            }
+        int lastId = ontologyDAO.findLastId();
+        String pathAux = path.getREAL_PATH() + "/ontoQuickFix_" + user + ".owl";
 
 
+        QuickFixFactory quickFixFactory = new QuickFixFactory();
+        QuickFixInterface quickFixInterface = quickFixFactory.applyQuickFix(getQuickFixSelected());
+        Set<OWLAxiom > axioms = quickFixInterface.validateOntology(ontologyUtil.getOntology(),listAffectedElements);
+        List<String> listChangesToApply = quickFixInterface.getListChangesToApply(axioms);
+
+        OWLOntology ontologyAux = quickFixInterface.getOntologyResult(ontologyUtil.getOntology(),ontologyUtil.getManager(), axioms);
+        System.out.println(ontologyAux);
+        try {
+            ontologyUtil.saveOntology(pathAux);
+            setArea(calculateArea());
+        } catch (OWLOntologyStorageException e) {
+            e.printStackTrace();
         }
-        //Poner mensaje cuando no se remueve o no encuentra que remover
-        setArea(calculateArea());
+
         selectAll = false;
     }
 
@@ -157,10 +163,10 @@ public class PitfallsBean implements Serializable {
 
     public String  calculateArea(){
         Integer[] dataOntology = new Integer[QualityMetricEnum.values().length];
-        if(!getQuickFixSelected().isEmpty()){
-            String path =   FacesContext.getCurrentInstance().getExternalContext().getRealPath("/resources");
-            path = path + "/ontoQuickFix1.owl";
-            MetricOntologyModel metricOntologyModel = loadBaseMetrics(path);
+        if(getQuickFixSelected() != 0){
+            int lastId = ontologyDAO.findLastId();
+            String pathAux = path.getREAL_PATH() + "/ontoQuickFix_" + user +".owl";
+            MetricOntologyModel metricOntologyModel = loadBaseMetrics(pathAux);
             loadQualityMetrics(metricOntologyModel, dataOntology);
             double areaOntology = UtilClass.getPolygonArea(dataOntology);
             return   String.valueOf(areaOntology);
@@ -190,7 +196,7 @@ public class PitfallsBean implements Serializable {
         baseMetricsStrategy = BaseMetricsFactory.getBaseMetric(BaseMetricEnum.CLASS_WITH_INDIVIDUALS);
         int classWithIndividuals = baseMetricsStrategy.calculateMetric(ontology);
 
-        return new MetricOntologyBuilder("QuickFix1").setNumAnnotations(annotations).
+        return new MetricOntologyBuilder("QuickFix").setNumAnnotations(annotations).
                 setNumProperties(properties).setNumClasses(classes).setNumInstances(instances).
                 setNumSubclassOf(subClasses).setNumSuperClasses(superClasses).setRelationsThing(relationThing).
                 setNumClassWithIndividuals(classWithIndividuals).build();
@@ -219,35 +225,40 @@ public class PitfallsBean implements Serializable {
         return jsonDataMetrics;
     }
 
-    public void saveQuickFix(){
-        if(renameFile("/ontoFinal.owl","/ontoAux.owl") &&
-            renameFile("/ontoQuickFix1.owl","/ontoFinal.owl") &&
-            deleteFile("/ontoAux.owl")){
-            FacesMessage message = new FacesMessage("Successful", "Quick fix"
-                   + " is done.");
-            FacesContext.getCurrentInstance().addMessage(null, message);
-            loadAffectedElements(selectedPitfall);
-            loadPitfalls();
-            selectAll = false;
+    public void saveQuickFix() throws IOException {
+        if(!description.isEmpty()){
+            Historial historial = getHistorialData();
+            if(!ontologyDAO.insert(historial, null)){
+                int lastId = ontologyDAO.findLastId();
+                String pathAux = path.getREAL_PATH() + "/ontoQuickFix_" + user +".owl";
+                String pathBackup = path.getREAL_PATH() + "/ontoBackup_" + user +".owl";
+                Util.pushChangesFile(pathAux,"ontology_"+user+"_"+ typeOntology +".owl",historial.getDescription());
+                Util.renameFile(pathOntology,pathBackup);
+                Util.renameFile(pathAux,pathOntology);
+                //loadAffectedElements(selectedPitfall);
+                loadPitfalls();
+                setShowPanelDetection(true);
+                setShowPanelSimulation(false);
+                selectAll = false;
+            }
+        }else{
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_FATAL, "Fatal!", "System Error"));
         }
+
     }
 
-    private boolean deleteFile(String pathOntology){
-        String path =   FacesContext.getCurrentInstance().getExternalContext().getRealPath("/resources");
-        File file = new File(path + pathOntology);
-        return file.delete();
-    }
+    public Historial getHistorialData(){
+        int lastId = ontologyDAO.findLastId();
+        String pathAux = path.getREAL_PATH() + "/ontology_" + user + "_" + typeOntology +".owl";
+        Historial historial = new Historial();
+        historial.setUname(user);
+        historial.setType(typeOntology);
+        historial.setPath(pathAux);
+        historial.setDescription(description);
+        historial.setQuickFix(quickFixSelected);
 
-    private boolean  renameFile(String oldFile, String newFile){
-        String path =   FacesContext.getCurrentInstance().getExternalContext().getRealPath("/resources");
-        File oldFileAux = new File(path + oldFile);
-        File newFileAux = new File(path + newFile);
-       return oldFileAux.renameTo(newFileAux);
-    }
-
-
-    public void destroyWorld() {
-        addMessage("System Error", "Please try again later.");
+        return historial;
     }
 
     private void addMessage(String summary, String detail) {
@@ -279,12 +290,12 @@ public class PitfallsBean implements Serializable {
         this.listAffectedElements = listAffectedElements;
     }
 
-    public String getPathOntology() {
-        return pathOntology;
+    public String getTypeOntology() {
+        return typeOntology;
     }
 
-    public void setPathOntology(String pathOntology) {
-        this.pathOntology = pathOntology;
+    public void setTypeOntology(String typeOntology) {
+        this.typeOntology = typeOntology;
     }
 
     public PathOntology getPath() {
@@ -303,11 +314,11 @@ public class PitfallsBean implements Serializable {
         this.selectAll = selectAll;
     }
 
-    public String getQuickFixSelected() {
+    public int getQuickFixSelected() {
         return quickFixSelected;
     }
 
-    public void setQuickFixSelected(String quickFixSelected) {
+    public void setQuickFixSelected(int quickFixSelected) {
         this.quickFixSelected = quickFixSelected;
     }
 
@@ -317,5 +328,40 @@ public class PitfallsBean implements Serializable {
 
     public void setArea(String area) {
         this.area = area;
+    }
+
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+
+    public boolean isDisabledSave() {
+        return disabledSave;
+    }
+
+    public void setDisabledSave(boolean disabledSave) {
+        this.disabledSave = disabledSave;
+    }
+
+
+    public boolean isShowPanelDetection() {
+        return showPanelDetection;
+    }
+
+    public void setShowPanelDetection(boolean showPanelDetection) {
+        this.showPanelDetection = showPanelDetection;
+    }
+
+    public boolean isShowPanelSimulation() {
+        return showPanelSimulation;
+    }
+
+    public void setShowPanelSimulation(boolean showPanelSimulation) {
+        this.showPanelSimulation = showPanelSimulation;
     }
 }

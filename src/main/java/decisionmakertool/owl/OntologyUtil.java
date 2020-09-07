@@ -6,7 +6,9 @@
 package decisionmakertool.owl;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -34,15 +36,34 @@ public class OntologyUtil {
 
     public OntologyUtil(String path) {
         try {
-            File file = new File(path);
-            manager = OWLManager.createOWLOntologyManager();
-            ontology = manager.loadOntologyFromOntologyDocument(file);
-            factory = new JFactFactory();
-            reasoner = this.factory.createReasoner(ontology);
-            dataFactory = manager.getOWLDataFactory();
+            if(!path.isEmpty()){
+                File file = new File(path);
+                manager = OWLManager.createOWLOntologyManager();
+                ontology = getManager().loadOntologyFromOntologyDocument(file);
+                factory = new JFactFactory();
+                reasoner = this.factory.createReasoner(ontology);
+                dataFactory = getManager().getOWLDataFactory();
+            }
         } catch (OWLOntologyCreationException ex) {
             Logger.getLogger(OntologyUtil.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    public OWLOntology getOntology(String path) {
+        try {
+            if(!path.isEmpty()){
+                File file = new File(path);
+                manager = OWLManager.createOWLOntologyManager();
+                ontology = getManager().loadOntologyFromOntologyDocument(file);
+                factory = new JFactFactory();
+                reasoner = this.factory.createReasoner(ontology);
+                dataFactory = getManager().getOWLDataFactory();
+            }
+        } catch (OWLOntologyCreationException ex) {
+            Logger.getLogger(OntologyUtil.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return ontology;
     }
 
     public String validationConsistency(String path) {
@@ -51,9 +72,9 @@ public class OntologyUtil {
 
         try {
             manager = OWLManager.createOWLOntologyManager();
-            ontology = manager.loadOntologyFromOntologyDocument(file);
+            ontology = getManager().loadOntologyFromOntologyDocument(file);
             manager = ontology.getOWLOntologyManager();
-            dataFactory = manager.getOWLDataFactory();
+            dataFactory = getManager().getOWLDataFactory();
             factory = new JFactFactory();
             reasoner = factory.createReasoner(ontology);
 
@@ -99,34 +120,38 @@ public class OntologyUtil {
         return answer;
     }
 
-    public void removeAxioms(String valueURI) throws OWLOntologyStorageException {
-        //saveOntology("ontoFinalCopy.owl");
+    public List<String> removeAxioms(String valueURI, String path) throws OWLOntologyStorageException {
         System.out.println("Element:" + valueURI);
-        OWLClass owlClass = manager . getOWLDataFactory().getOWLClass(IRI.create(valueURI));
+        List<String> listChanges = new ArrayList<>();
         Set < OWLAxiom > axiomsToRemove =  new  HashSet <> ();
         for ( OWLAxiom axiom : ontology.getAxioms ()) {
             if (axiom.getSignature().toString().contains(valueURI)) {
                 axiomsToRemove.add(axiom);
+                listChanges.add("Axiom to remove:" + axiom);
                 System.out.println( " para eliminar de "  + ontology.getOntologyID ().getOntologyIRI () +  " : "  + axiom);
             }
         }
-         manager.removeAxioms (ontology, axiomsToRemove);
-         saveOntology("ontoQuickFix1.owl");
+         getManager().removeAxioms (ontology, axiomsToRemove);
+         saveOntology(path);
+         return listChanges;
     }
 
-    public void saveOntology(String nameOwl) throws OWLOntologyStorageException {
-        String realpath = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/resources");
-        String pathAutomaticOntology = realpath + "/" + nameOwl;
-        File fileformated = new File(pathAutomaticOntology);
+    public void saveOntology(String path) throws OWLOntologyStorageException {
+        //String realpath = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/resources");
+        File fileformated = new File(path);
         //Save the ontology in a different format
-        OWLOntologyFormat format = manager.getOntologyFormat(ontology);
+        OWLOntologyFormat format = getManager().getOntologyFormat(ontology);
         RDFXMLOntologyFormat owlxmlFormat = new RDFXMLOntologyFormat();
         if (format.isPrefixOWLOntologyFormat()) {
             owlxmlFormat.copyPrefixesFrom(format.asPrefixOWLOntologyFormat());
         }
-        manager.saveOntology(ontology, owlxmlFormat, IRI.create(fileformated.toURI()));
+        getManager().saveOntology(ontology, owlxmlFormat, IRI.create(fileformated.toURI()));
     }
 
+    public  Set<OWLClass> getClasses() {
+        Set<OWLClass> classes = ontology.getClassesInSignature();
+        return classes;
+    }
 
 
     public int getCountAxioms(){
@@ -149,4 +174,8 @@ public class OntologyUtil {
         this.factory = factory;
     }
 
+
+    public OWLOntologyManager getManager() {
+        return manager;
+    }
 }

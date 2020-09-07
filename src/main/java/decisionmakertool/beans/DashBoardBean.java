@@ -1,6 +1,7 @@
 package decisionmakertool.beans;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import decisionmakertool.dao.OntologyDAO;
 import decisionmakertool.owl.OntologyUtil;
 import decisionmakertool.util.PathOntology;
 import java.io.Serializable;
@@ -10,8 +11,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
+import javax.servlet.http.HttpSession;
 
+import decisionmakertool.util.SessionUtils;
 import decisionmakertool.util.Util;
 import metrics.basemetrics.BaseMetricEnum;
 import metrics.basemetrics.BaseMetricsFactory;
@@ -21,25 +25,31 @@ import metrics.qualitymetrics.QualityMetricFactory;
 import metrics.qualitymetrics.QualityMetricsStrategy;
 import model.MetricOntologyBuilder;
 import model.MetricOntologyModel;
+import org.primefaces.json.JSONArray;
+import org.primefaces.json.JSONObject;
 import org.semanticweb.owlapi.model.OWLOntology;
 import util.UtilClass;
 
 @ManagedBean
-@ViewScoped
+@SessionScoped
 public class DashBoardBean implements Serializable {
 
     private static final long serialVersionUID = 1094801825228386363L;
     private List<MetricOntologyModel> listDataOntology;
-    private OWLOntology manualOntology;
-    private  OWLOntology automaticOntology;
-    private String resultMetricsManualOntology = "";
+    private OWLOntology Ontology;
+    private OWLOntology automaticOntology;
+    private String resultMetricsOntology = "[0,0,0,0,0,0,0,0,0]";
     private String resultMetricsAutomaticOntology = "";
-    private String areaPolygonManualOntology = "";
+    private String areaPolygonOntology = "";
     private String areaPolygonAutomaticOntology= "";
     private String labels;
+    private JSONObject json = new JSONObject();
+    private HttpSession session = SessionUtils.getSession();
+    private String user = session.getAttribute("username").toString();
 
     @PostConstruct
     public void init() {
+
     }
 
     public void loadData(){
@@ -53,16 +63,24 @@ public class DashBoardBean implements Serializable {
     }
 
     private  void loadOntologies(){
-        PathOntology path = new PathOntology();
-        OntologyUtil loadManualOntology = new OntologyUtil(path.getPathManualOntology());
-        manualOntology = loadManualOntology.getOntology();
-        OntologyUtil loadAutomaticOntology  = new OntologyUtil(path.getPathAutomaticOntology());
+        PathOntology  path = new PathOntology();
+        String pathOntology = path.getREAL_PATH() + "/ontology_" + user + "_B.owl";
+        String pathAutomaticOntology = path.getREAL_PATH() + "/ontology_" + user + "_A.owl";
+        OntologyUtil loadOntology = new OntologyUtil(pathOntology);
+        Ontology = loadOntology.getOntology();
+        OntologyUtil loadAutomaticOntology  = new OntologyUtil(pathAutomaticOntology);
         automaticOntology = loadAutomaticOntology.getOntology();
     }
 
     private void loadBaseMetrics() {
-        loadBaseMetricsOntology(manualOntology, "Base Ontology");
-        loadBaseMetricsOntology(automaticOntology,  "Automatic Ontology");
+        listDataOntology = new ArrayList<>();
+        if(Ontology!= null){
+            loadBaseMetricsOntology(Ontology, "Reference Ontology");
+        }
+
+        if(automaticOntology != null){
+           loadBaseMetricsOntology(automaticOntology,  "Target Ontology");
+        }
     }
     private void loadLabelsGraphic() {
         String[] arrayLabels = new String[QualityMetricEnum.values().length];
@@ -81,15 +99,48 @@ public class DashBoardBean implements Serializable {
     }
 
     private void loadGraphicMetrics(){
-        Integer[] dataManualOntology = new Integer[QualityMetricEnum.values().length];
+        Integer[] dataOntology = new Integer[QualityMetricEnum.values().length];
         Integer[] dataAutomaticOntology = new Integer[QualityMetricEnum.values().length];
-        resultMetricsManualOntology = loadQualityMetrics(listDataOntology.get(0), dataManualOntology);
-        resultMetricsAutomaticOntology = loadQualityMetrics(listDataOntology.get(1), dataAutomaticOntology);
+        if(listDataOntology.size() > 1){
+            resultMetricsOntology = loadQualityMetrics(listDataOntology.get(0), dataOntology);
+            resultMetricsAutomaticOntology = loadQualityMetrics(listDataOntology.get(1), dataAutomaticOntology);
+            double areaOntology = UtilClass.getPolygonArea(dataOntology);
+            double areaAutomaticOntology = UtilClass.getPolygonArea(dataAutomaticOntology);
+            areaPolygonOntology = "Reference Ontology Area: " + String.format("%.2f", areaOntology);
+            areaPolygonAutomaticOntology = "Target Ontology Area: " + String.format("%.2f", areaAutomaticOntology);
 
-        double areaManualOntology = UtilClass.getPolygonArea(dataManualOntology);
-        double areaAutomaticOntology = UtilClass.getPolygonArea(dataAutomaticOntology);
-        areaPolygonManualOntology = "Manual Ontology Area: " + String.format("%.2f", areaManualOntology);
-        areaPolygonAutomaticOntology = "Automatic Ontology Area: " + String.format("%.2f", areaAutomaticOntology);
+
+
+        }else {
+            resultMetricsAutomaticOntology = loadQualityMetrics(listDataOntology.get(0), dataAutomaticOntology);
+
+            double areaAutomaticOntology = UtilClass.getPolygonArea(dataAutomaticOntology);
+            areaPolygonAutomaticOntology = "Target Ontology Area: " + String.format("%.2f", areaAutomaticOntology);
+        }
+    }
+
+    public void generateJsonData(List<MetricOntologyModel> listDataOntology){
+        Integer[] listQualityMetrics = new Integer[QualityMetricEnum.values().length];
+        json.put("labels", labels);
+        JSONArray array = new JSONArray();
+
+        for(MetricOntologyModel data: listDataOntology){
+            String resultQualityMetric = loadQualityMetrics(data, listQualityMetrics);
+            double areaOntology = UtilClass.getPolygonArea(listQualityMetrics);
+            String areaPolygonOntology = "Ontology Area: " + String.format("%.2f", areaOntology);
+            JSONObject item = new JSONObject();
+            item.put("label", areaPolygonOntology);
+            item.put("backgroundColor", "rgba(3, 88, 106, 0.2)");
+            item.put("borderColor", "rgba(3, 88, 106, 0.80)");
+            item.put("pointBorderColor", "rgba(3, 88, 106, 0.80)");
+            item.put("pointHoverBackgroundColor", "course1");
+            item.put("pointHoverBorderColor", "course1");
+
+            item.put("data", resultQualityMetric);
+            array.put(item);
+        }
+        json.put("datasets", array);
+        System.out.println("array:" + array);
     }
 
     private void loadBaseMetricsOntology(OWLOntology ontology, String name) {
@@ -146,20 +197,20 @@ public class DashBoardBean implements Serializable {
         return listDataOntology;
     }
 
-    public String getResultMetricsManualOnto() {
-        return resultMetricsManualOntology;
+    public String getResultMetricsOnto() {
+        return resultMetricsOntology;
     }
 
     public String getResultMetricsAutomaticOntology() {
         return resultMetricsAutomaticOntology;
     }
 
-    public String getAreaPolygonManualOntology() {
-        return areaPolygonManualOntology;
+    public String getAreaPolygonOntology() {
+        return areaPolygonOntology;
     }
 
-    public void setAreaPolygonManualOntology(String areaPolygonManualOntology) {
-        this.areaPolygonManualOntology = areaPolygonManualOntology;
+    public void setAreaPolygonOntology(String areaPolygonOntology) {
+        this.areaPolygonOntology = areaPolygonOntology;
     }
 
     public String getAreaPolygonAutomaticOntology() {
@@ -176,5 +227,14 @@ public class DashBoardBean implements Serializable {
 
     public void setLabels(String labels) {
         this.labels = labels;
+    }
+
+
+    public JSONObject getJson() {
+        return json;
+    }
+
+    public void setJson(JSONObject json) {
+        this.json = json;
     }
 }

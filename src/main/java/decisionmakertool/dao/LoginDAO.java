@@ -5,8 +5,14 @@
  */
 package decisionmakertool.dao;
 
+import decisionmakertool.entities.User;
 import decisionmakertool.util.DataConnect;
 import org.springframework.stereotype.Service;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.persistence.Query;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,30 +20,19 @@ import java.sql.SQLException;
 @Service
 public class LoginDAO {
 
-    public LoginDAO(){
-
-    }
+    /*private  EntityManager em;
+    private EntityManagerFactory emf = Persistence
+            .createEntityManagerFactory("OntoFixerPU");*/
 
     public  boolean validate(String user, String password) {
-        /*
-        User user1 =  userService.findUser(user, password);
-        if(user1 != null){
-            return true;
-        }else{
-            return false;
-        }*/
-
-        Connection con;
-        con = DataConnect.getConnection();
-        String sqlStatement = "Select uname, upassword from User where uname = ? and upassword = ?";
-        System.out.println("sql:" + sqlStatement);
+        Connection con = DataConnect.getConnection();
+        String sqlStatement = "Select uname, upassword from user where uname = ? and upassword = ?";
         try (PreparedStatement ps = con.prepareStatement(sqlStatement)){
             ps.setString(1, user);
             ps.setString(2, password);
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                //result found, means valid inputs
                 return true;
             }
             rs.close();
@@ -47,6 +42,20 @@ public class LoginDAO {
             DataConnect.close(con);
         }
         return false;
-
     }
+
+    /*
+    public User findUser(String uname){
+        User user = em.find(User.class, uname);
+        return user;
+    }
+
+    public boolean validateUser(User user, String password){
+        if(user.getUpassword().equals(password)){
+            return true;
+        }else {
+            return false;
+        }
+    }*/
+
 }
