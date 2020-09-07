@@ -11,6 +11,6 @@ import java.util.Set;
 public interface QuickFixInterface {
     Set<OWLAxiom> validateOntology(OWLOntology ontology, List<AffectedElement> listAffectedElements);
     List<String>  getListChangesToApply(Set<OWLAxiom> axiomsToChange);
-    OWLOntology getResultQuickFix(OWLOntology ontology, OWLOntologyManager manager, Set<OWLAxiom> axiomsToChange);
+    OWLOntology getOntologyResult(OWLOntology ontology, OWLOntologyManager manager, Set<OWLAxiom> axiomsToChange);
 
 }

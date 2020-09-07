@@ -26,7 +26,7 @@ public class LoginDAO {
 
     public  boolean validate(String user, String password) {
         Connection con = DataConnect.getConnection();
-        String sqlStatement = "Select uname, upassword from User where uname = ? and upassword = ?";
+        String sqlStatement = "Select uname, upassword from user where uname = ? and upassword = ?";
         try (PreparedStatement ps = con.prepareStatement(sqlStatement)){
             ps.setString(1, user);
             ps.setString(2, password);

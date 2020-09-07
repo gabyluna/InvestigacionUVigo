@@ -10,19 +10,18 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 
 import decisionmakertool.util.SessionUtils;
-import decisionmakertool.util.Util;
 import org.primefaces.model.UploadedFile;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
-import org.w3c.dom.Document;
 
 
-@Scope(value = "session")
-@Component(value = "fileUploadBean")
+
+@ManagedBean
+@SessionScoped
 public class FileUploadBean implements Serializable {
 
     private UploadedFile file;
@@ -88,7 +87,7 @@ public class FileUploadBean implements Serializable {
         }
 
         if (chooseMode.equals(OntologyType.BASE.getType())) {
-            answer = loadOntology.validationConsistency(pathOntologyBase.getPathManualOntology());
+            answer = loadOntology.validationConsistency(pathOntologyBase.getPathOntology());
         }
     }
 

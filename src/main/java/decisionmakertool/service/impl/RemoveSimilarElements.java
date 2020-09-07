@@ -18,19 +18,53 @@ public class RemoveSimilarElements implements QuickFixInterface {
     @Override
     public Set<OWLAxiom> validateOntology(OWLOntology ontology, List<AffectedElement> listAffectedElements) {
         Set<OWLAxiom> axiomsToChange =  new HashSet<>();
+        LevenshteinDistance levenshteinDistance = new LevenshteinDistance();
+        List<AffectedElement> listAffectedElemenstToRemove = new ArrayList<>();
+        int sizeList = listAffectedElements.size();
+
+        for(int i = 0; i < sizeList; i++){
+            if(listAffectedElements.get(i).getSelected()){
+                String wordAux1 =  Util.getWord(listAffectedElements.get(i).getURI());
+                for(int j=(sizeList-1);j >= 0 ; j--){
+                    String wordAux2 =  Util.getWord(listAffectedElements.get(j).getURI());
+                    int distance = levenshteinDistance.apply(wordAux1,wordAux2);
+
+                    if(distance > 0 && distance < 3) {
+                        listAffectedElemenstToRemove.add(listAffectedElements.get(j));
+                    }
+                }
+            }
+
+        }
+
+        listAffectedElemenstToRemove = listAffectedElemenstToRemove.stream().collect(Collectors.toCollection(()->
+                new TreeSet<>(Comparator.comparing(AffectedElement::getURI)))).stream().collect(Collectors.toList());
+
+        for ( OWLAxiom axiom : ontology.getAxioms ()) {
+            for(AffectedElement affectedElement: listAffectedElemenstToRemove){
+                if (axiom.getSignature().toString().contains(affectedElement.getURI())) {
+                    axiomsToChange.add(axiom);
+                }
+            }
+        }
 
         return  axiomsToChange;
     }
 
     @Override
     public List<String> getListChangesToApply(Set<OWLAxiom> axiomsToChange) {
-        return null;
+        List<String> listChanges = new ArrayList<>();
+        for ( OWLAxiom axiom : axiomsToChange) {
+            listChanges.add("Axiom to change:" + axiom);
+        }
+        return listChanges;
     }
 
 
     @Override
-    public OWLOntology getResultQuickFix(OWLOntology ontology, OWLOntologyManager manager, Set<OWLAxiom> axiomsToChange) {
-        return null;
+    public OWLOntology getOntologyResult(OWLOntology ontology, OWLOntologyManager manager, Set<OWLAxiom> axiomsToRemove) {
+        manager.removeAxioms(ontology, axiomsToRemove);
+        return ontology;
     }
 
    /* @Override

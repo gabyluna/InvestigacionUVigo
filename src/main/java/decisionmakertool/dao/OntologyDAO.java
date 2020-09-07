@@ -17,11 +17,11 @@ public class OntologyDAO {
 
      public  boolean insert(Historial historial, InputStream in) throws IOException {
         Connection con = DataConnect.getConnection();
-        String pathFile = historial.getPath() + "/ontology_" + (findLastId() + 1) + ".owl";
-        System.out.println("pathFile:" + pathFile);
+        String pathFile = historial.getPath() + "/ontology_" + historial.getUname() + "_" + historial.getType()+ ".owl";
 
         if(in != null){
             Util.loadFile(pathFile,in);
+            Util.pushChangesFile(pathFile, "ontology_"+ historial.getUname() + "_" + historial.getType() + ".owl", "upload file");
         }else {
             pathFile = historial.getPath();
         }
@@ -29,7 +29,7 @@ public class OntologyDAO {
         pathFile = pathFile.replace("\\", "/");
         int lastId = findIdOntologyByState(true, historial.getType());
         updateStatusOntology(false, lastId);
-        String sqlStatement = "INSERT INTO Historial (uname, path, type, date, description,quickfix,state) VALUES " +
+        String sqlStatement = "INSERT INTO historial (uname, path, type, date, description,quickfix,state) VALUES " +
                 "('"+ historial.getUname()+
                 "','"+pathFile+"','"+
                 historial.getType()+
@@ -50,19 +50,25 @@ public class OntologyDAO {
 
     public int findLastId(){
         Connection con = DataConnect.getConnection();
-        String sqlStatement = "Select * from Historial ORDER BY id DESC LIMIT 1";
+        String sqlStatement = "Select * from historial ORDER BY id DESC LIMIT 1";
+        return executeSelectId(con, sqlStatement);
+    }
+
+    public int findIdOntologyByStateAndUname(Boolean status, String type, String uname){
+        Connection con = DataConnect.getConnection();
+        String sqlStatement = "Select * from historial where state ="+ status + " and type='" + type +"' and uname='"+ uname +"'";
         return executeSelectId(con, sqlStatement);
     }
 
     private int findIdOntologyByState(Boolean status, String type){
         Connection con = DataConnect.getConnection();
-        String sqlStatement = "Select * from Historial where state ="+ status + " and type='" + type +"'";
+        String sqlStatement = "Select * from historial where state ="+ status + " and type='" + type +"'";
         return executeSelectId(con, sqlStatement);
     }
 
     public void updateStatusOntology(Boolean status, Integer id){
         Connection con = DataConnect.getConnection();
-        String sqlStatement = "update Historial set state =" + status + " where id ="+ id;
+        String sqlStatement = "update historial set state =" + status + " where id ="+ id;
         try (PreparedStatement ps = con.prepareStatement(sqlStatement)){
             ps.executeUpdate();
         } catch (SQLException ex) {
@@ -74,7 +80,7 @@ public class OntologyDAO {
 
     public String findPathOntologyActive(String type){
         Connection con = DataConnect.getConnection();
-        String sqlStatement = "select * from Historial where state = true and type ='"+ type +"'";
+        String sqlStatement = "select * from historial where state = true and type ='"+ type +"'";
 
         try (PreparedStatement ps = con.prepareStatement(sqlStatement)){
             ResultSet rs = ps.executeQuery();
@@ -93,7 +99,7 @@ public class OntologyDAO {
     public List<Historial> getHistorial(String username){
          List<Historial> listAux = new ArrayList<>();
          Connection con = DataConnect.getConnection();
-         String sqlStatement = "select * from Historial where type = 'A' and uname ='"+ username +"' order by date DESC";
+         String sqlStatement = "select * from historial where type = 'A' and uname ='"+ username +"' order by date DESC";
 
         try (PreparedStatement ps = con.prepareStatement(sqlStatement)){
             ResultSet rs = ps.executeQuery();
@@ -133,6 +139,4 @@ public class OntologyDAO {
         }
         return 0;
     }
-
-
 }

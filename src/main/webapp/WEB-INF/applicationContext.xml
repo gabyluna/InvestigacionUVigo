@@ -8,5 +8,6 @@
     <bean id="loginBean" class="decisionmakertool.beans.LoginBean" scope="session"/>
     <bean id="pitfallsBean" class="decisionmakertool.beans.PitfallsBean" scope="session"/>
     <bean id="historialBean" class="decisionmakertool.beans.HistorialBean" scope="session"/>
+    <bean id="viewerBean" class="decisionmakertool.beans.ViewerBean" scope="session"/>
 
 </beans>

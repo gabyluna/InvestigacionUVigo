@@ -20,7 +20,6 @@
                 <f:event type="preRenderView" listener="#{historialBean.loadHistorial}" />
             </f:metadata>
 
-
             <p:separator />
 
             <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
@@ -33,10 +32,7 @@
                     <h:outputText value="version #{historial.id}" />
                 </p:column>
                 <p:column headerText="State" style="width: 50px">
-                    <p:selectBooleanButton id="value1" value="#{historial.state}" onLabel="Active"
-                                           offLabel="Inactive" style="width:80px" >
-                        <p:ajax update="messages" listener="#{historialBean.updateState}" />
-                    </p:selectBooleanButton>
+                    <h:outputText value="#{historial.state == true ? 'Active' : 'Inactive'}" />
                 </p:column>
                 <p:column headerText="Description" style="width: 250px">
                     <h:outputText value="#{historial.description}" />
@@ -48,9 +44,18 @@
                     <h:outputText value="#{historial.date}" />
                 </p:column>
                 <p:column headerText="Download" style="width:50px;text-align: center">
-                    <p:commandLink ajax="false" action="#{historialBean.downloadFile}" ><i class="fa fa-download"></i>
+                    <p:commandLink disabled="#{!historial.state}"
+                            ajax="false" action="#{historialBean.downloadFile}" ><i class="fa fa-download"></i>
                         <f:setPropertyActionListener value="#{historial}" target="#{historialBean.historialSelected}" />
                         <p:fileDownload value="#{historialBean.file}" />
+                    </p:commandLink>
+                    <p:spacer width="10" />
+                    <p:commandLink disabled="#{!historial.state}"
+                                   ajax="false"
+                                   update="@form"
+                                   action="#{historialBean.updateState}">
+                        <i class="fa fa-history"></i>
+
                     </p:commandLink>
                 </p:column>
 

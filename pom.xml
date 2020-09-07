@@ -169,8 +169,17 @@
             <artifactId>ontoMetrics</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
-
-    </dependencies>
+        <dependency>
+            <groupId>org.drontoapi</groupId>
+            <artifactId>drontoapi</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jgit</groupId>
+            <artifactId>org.eclipse.jgit</artifactId>
+            <version>5.7.0.202003110725-r</version>
+        </dependency>
+     </dependencies>
 
     <build>
         <plugins>

@@ -34,7 +34,7 @@ public class RemoveInvolvedElements implements QuickFixInterface {
     }
 
     @Override
-    public OWLOntology getResultQuickFix(OWLOntology ontology, OWLOntologyManager manager, Set<OWLAxiom> axiomsToRemove) {
+    public OWLOntology getOntologyResult(OWLOntology ontology, OWLOntologyManager manager, Set<OWLAxiom> axiomsToRemove) {
         manager.removeAxioms(ontology, axiomsToRemove);
         return ontology;
     }

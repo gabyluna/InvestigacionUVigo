@@ -9,8 +9,6 @@ import decisionmakertool.entities.User;
 import decisionmakertool.util.SessionUtils;
 import decisionmakertool.dao.LoginDAO;
 import decisionmakertool.util.Util;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -19,11 +17,13 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 
-@Scope(value = "session")
-@Component(value = "loginBean")
+@ManagedBean
+@SessionScoped
 public class LoginBean implements Serializable {
     private static final long serialVersionUID = 1094801825228386363L;
     private static final String PATH_FILE_PROPERTIES = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/resources")

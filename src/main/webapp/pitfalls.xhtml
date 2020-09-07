@@ -13,7 +13,6 @@
 
     <ui:define name="contenido">
         <h:form id="form"  enctype="multipart/form-data">
-            <!-- Menu -->
 
             <p:growl id="messages" showDetail="true" />
 
@@ -29,8 +28,8 @@
                     <p:spacer width="10px" />
                     <p:selectOneMenu id="selectOntology" value="#{pitfallsBean.typeOntology}" style="width:150px">
                         <f:selectItem itemLabel="--- Select one ---" itemValue="" noSelectionOption="true" />
-                        <f:selectItem itemLabel="Manual Ontology" itemValue="B" noSelectionOption="true" />
-                        <f:selectItem itemLabel="Automatic Ontology" itemValue="A" noSelectionOption="true" />
+                        <f:selectItem itemLabel="Reference Ontology" itemValue="B" noSelectionOption="true" />
+                        <f:selectItem itemLabel="Target Ontology" itemValue="A" noSelectionOption="true" />
                     </p:selectOneMenu>
                     <p:spacer width="20px" />
                     <p:commandButton styleClass="btn btn-round btn-primary" value="Search" ajax="false"
@@ -60,8 +59,11 @@
                     </p:column>
 
                     <p:column style="width:80px;text-align: center">
-                        <p:commandButton styleClass="btn btn-primary" update="form, formSimulation" actionListener="#{pitfallsBean.loadAffectedElements(pitfall)}"
-                                   oncomplete="PF('elementsDialog').show()"  label="Apply Quick Fix" >
+                        <p:commandButton  styleClass="btn btn-primary"
+                                          update=":form:panelDetection,:form:panelSimulation" ajax="false"
+                                          action="#{pitfallsBean.loadAffectedElements(pitfall)}"
+                                          onclick="PF('statusDialog').show()" oncomplete="PF('statusDialog').hide()"
+                                          value="Apply Quick Fix" >
                             <f:setPropertyActionListener value="#{pitfall}" target="#{pitfallsBean.selectedPitfall}" />
                         </p:commandButton>
                     </p:column>
@@ -70,10 +72,6 @@
 
             <!-- /top tiles -->
             <p:separator />
-
-        </h:form>
-
-        <h:form id="formSimulation"  enctype="multipart/form-data">
 
             <p:outputPanel id="panelSimulation" legend="Simulation" rendered="#{pitfallsBean.showPanelSimulation}">
                 <h:panelGrid columns="5" cellpadding="5">
@@ -90,6 +88,8 @@
                                      onclick="PF('statusDialog').show()" oncomplete="PF('statusDialog').hide()"/>
                 </h:panelGrid>
 
+                <p:spacer height="20px" />
+
                 <h:panelGrid   id="elementsDetail" columns="1" rendered="#{not empty pitfallsBean.selectedPitfall}" >
                     <p:dataTable id="tableAffectedElements1" var="element" value="#{pitfallsBean.listAffectedElements}"
                                  scrollable="true" scrollHeight="150" style="margin-bottom:0">
@@ -102,7 +102,7 @@
                         <p:column style="width: 60px; text-align:center" >
                             <f:facet name="header">
                                 <p:selectBooleanCheckbox value="#{pitfallsBean.selectAll}" >
-                                    <p:ajax listener="#{pitfallsBean.selectAllElements}" update=":formSimulation:panelSimulation" />
+                                    <p:ajax listener="#{pitfallsBean.selectAllElements}" update=":form:elementsDetail" />
                                 </p:selectBooleanCheckbox>
                             </f:facet>
                             <p:selectBooleanCheckbox value="#{element.selected}" />
@@ -117,31 +117,25 @@
 
                 <p:separator />
 
-                <h:panelGrid id="areaOntology" columns="1" style="margin-left:400px">
+                <h:panelGrid id="areaOntology" columns="1" style="margin:0">
                     <div class="table-responsive">
                         <table class="table table-striped jambo_table bulk_action">
                             <thead>
-                            <tr class="headings">
-                                <th class="column-title">Result Simulation</th>
-                                <th class="column-title">  </th>
-                                <th class="bulk-actions" colspan="7">
-                                    <a class="antoo" style="color:#fff; font-weight:500;">Bulk Actions ( <span class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
-                                </th>
-                            </tr>
+                                <tr class="headings">
+                                    <th colspan="2" class="column-title">Result Simulation</th>
+                                </tr>
                             </thead>
                             <tbody>
                                 <tr class="even pointer">
                                     <td class="a-center ">Calculated area: #{pitfallsBean.area}</td>
                                     <td class="a-center ">#{dashBoardBean.areaPolygonAutomaticOntology}</td>
                                 </tr>
-                                <tr class="odd pointer">
-                                    <td class="a-center ">  &nbsp; </td>
-                                    <td class="a-center ">
-                                        <p:commandButton value="Apply Quick Fix" type="button" onclick="PF('widgetQuickFix').show();"
-                                                         styleClass="btn btn-success" />
-                                    </td>
-                                </tr>
                             </tbody>
+                            <tfoot>
+                               <p:commandButton value="Apply Quick Fix" onclick="PF('widgetQuickFix').show();"
+                                                         styleClass="btn btn-success" />
+
+                            </tfoot>
                         </table>
                     </div>
                 </h:panelGrid>
@@ -149,16 +143,20 @@
                 <p:dialog header="Apply Quick Fix" widgetVar="widgetQuickFix" minHeight="40">
                     <h:panelGrid columns="1">
                         <p>Insert a description</p>
-                        <p:inputTextarea rows="6" cols="33" />
+                        <p:inputTextarea rows="6" cols="33" value="#{pitfallsBean.description}"/>
                     </h:panelGrid>
                     <p:separator/>
                     <h:panelGrid columns="1" style="margin-bottom: 0">
                         <p:commandButton id="btnSave" value="Save"  styleClass="ui-confirmdialog-yes"
-                                         action="#{pitfallsBean.saveQuickFix}"
-                                         update=":formSimulation:elementsDetail,messages"/>
+                                   ajax="false"  action="#{pitfallsBean.saveQuickFix}"
+                                   onclick="PF('statusDialog').show()" oncomplete="PF('statusDialog').hide()"
+                                   update=":form:panelSimulation,:form:panelDetection, messages"/>
                     </h:panelGrid>
                 </p:dialog>
             </p:outputPanel>
+
         </h:form>
+
+
     </ui:define>
 </ui:composition>
