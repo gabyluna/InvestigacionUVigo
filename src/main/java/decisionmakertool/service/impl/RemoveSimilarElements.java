@@ -4,7 +4,7 @@ import decisionmakertool.entities.QuickFixModel;
 import decisionmakertool.owl.OntologyUtil;
 import decisionmakertool.service.QuickFixInterface;
 import decisionmakertool.util.Util;
-import drontoapi.pitfallmanager.AffectedElement;
+import ionelvirgilpop.drontoapi.pitfallmanager.AffectedElement;
 import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLOntology;
@@ -23,7 +23,7 @@ public class RemoveSimilarElements implements QuickFixInterface {
         int sizeList = listAffectedElements.size();
 
         for(int i = 0; i < sizeList; i++){
-            if(listAffectedElements.get(i).getSelected()){
+            if(!listAffectedElements.get(i).getElementSet().isEmpty()){
                 String wordAux1 =  Util.getWord(listAffectedElements.get(i).getURI());
                 for(int j=(sizeList-1);j >= 0 ; j--){
                     String wordAux2 =  Util.getWord(listAffectedElements.get(j).getURI());

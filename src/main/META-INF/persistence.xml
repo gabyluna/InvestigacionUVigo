@@ -3,10 +3,10 @@
     <persistence-unit name="OntoFixerPU">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <properties>
-            <property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306/dbdecisionmaker" />
+            <property name="hibernate.connection.url" value="jdbc:mysql://34.75.165.135:3306/dbdecisionmaker" />
             <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver" />
-            <property name="hibernate.connection.username" value="root" />
-            <property name="hibernate.connection.password" value="root" />
+            <property name="hibernate.connection.username" value="ontofixer" />
+            <property name="hibernate.connection.password" value="ontofixer" />
             <property name="hibernate.archive.autodetection" value="class" />
             <property name="hibernate.show_sql" value="true" />
             <property name="hibernate.format_sql" value="true" />

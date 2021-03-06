@@ -9,7 +9,7 @@ public class PathOntology {
     private String REAL_PATH = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/resources");
     private String pathRawRepo = "https://raw.githubusercontent.com/gabyluna/ontologies/master/";
     private String pathRepo = "/root/ontologies";
-  
+
     public PathOntology() {
 
         pathAutomaticOntology = REAL_PATH + "/ontoFinal.owl";
